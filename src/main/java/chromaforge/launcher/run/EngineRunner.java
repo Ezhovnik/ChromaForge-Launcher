@@ -1,5 +1,7 @@
 package chromaforge.launcher.run;
 
-public class EngineRunner {
-    
+import java.nio.file.Path;
+
+public interface EngineRunner {
+    void run(Path coreDir);
 }

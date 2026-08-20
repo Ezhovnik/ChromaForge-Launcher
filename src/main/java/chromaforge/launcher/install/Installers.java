@@ -1,5 +1,6 @@
 package chromaforge.launcher.install;
 
+import chromaforge.launcher.coders.zip.Unzipper;
 import chromaforge.launcher.util.Platform;
 
 public class Installers {
@@ -8,7 +9,7 @@ public class Installers {
     public static Installer of(Platform.OS os) {
         switch (os) {
             case WINDOWS:
-                return new WindowsInstaller(new Downloader());
+                return new WindowsInstaller(new Downloader(), new Unzipper());
             case LINUX:
                 return new LinuxInstaller(new Downloader());
             case MACOS:
@@ -17,5 +18,4 @@ public class Installers {
                 throw new RuntimeException("The platform is not supported");
         }
     }
-
 }
