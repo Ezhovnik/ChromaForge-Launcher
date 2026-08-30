@@ -6,6 +6,7 @@ import chromaforge.launcher.github.GitHubClient;
 import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.install.Installers;
 import chromaforge.launcher.run.Runners;
+import chromaforge.launcher.util.LauncherVersion;
 import chromaforge.launcher.util.Platform;
 
 import java.nio.file.Path;
@@ -17,6 +18,8 @@ import chromaforge.launcher.coders.json.JsonValue;
 
 public class Launcher {
     public static void main(String[] args) {
+        System.out.println("ChromaForge Launcher v" + LauncherVersion.VERSION.toString());
+
         Platform.OS os = Platform.detectOS();
 
         String json = new GitHubClient().fetchReleases();
@@ -36,7 +39,7 @@ public class Launcher {
 
         AssetInfo asset = AssetInfo.fromRelease(release);
 
-        Path installDir = Path.of("chromaforge");
+        Path installDir = Path.of("cores/" + "chromaforge-" + release.tagName);
         System.out.println("Installing " + release.tagName + " ...");
         Installers.of(os).install(asset, installDir);
 

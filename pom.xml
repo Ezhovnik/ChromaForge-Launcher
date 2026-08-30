@@ -29,6 +29,8 @@
                     <archive>
                         <manifest>
                             <mainClass>chromaforge.launcher.Launcher</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
                 </configuration>
