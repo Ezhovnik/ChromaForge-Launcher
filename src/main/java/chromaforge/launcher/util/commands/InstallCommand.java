@@ -37,9 +37,6 @@ public class InstallCommand extends Command {
                 break;
             }
         }
-        if (release == null) {
-            throw new RuntimeException("No installable release found");
-        }
 
         AssetInfo asset = AssetInfo.fromRelease(release);
         if (asset == null) {

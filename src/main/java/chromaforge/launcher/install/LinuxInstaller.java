@@ -19,29 +19,21 @@ public final class LinuxInstaller implements Installer {
 
     @Override
     public void install(AssetInfo asset, Path installDir) {
-        System.out.println("LinuxInstaller: installing " + asset.name + " to " + installDir);
         try {
             Files.createDirectories(installDir);
             Path target = installDir.resolve("ChromaForge.AppImage");
             Path temp = Files.createTempFile("chromaforge", ".AppImage");
 
             try {
-                System.out.println("Downloading from: " + asset.browserDownloadUrl);
                 downloader.download(asset.browserDownloadUrl, temp, null);
-                System.out.println("Download complete, moving to " + target);
                 Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Setting executable permissions...");
                 setExecutable(target);
-                System.out.println("Installation successful: " + target);
             } finally {
                 Files.deleteIfExists(temp);
             }
 
             if (!Files.exists(target)) {
                 throw new RuntimeException("Target file missing after installation: " + target);
-            }
-            if (!Files.isExecutable(target)) {
-                System.out.println("Warning: " + target + " is not executable");
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to install " + asset.name, e);
