@@ -42,6 +42,9 @@ public class InstallCommand extends Command {
         }
 
         AssetInfo asset = AssetInfo.fromRelease(release);
+        if (asset == null) {
+            throw new RuntimeException("No asset found for your platform in " + release.tagName);
+        }
 
         Path installDir = Path.of("cores/chromaforge-" + release.tagName);
         System.out.println("Installing " + release.tagName + " ...");
