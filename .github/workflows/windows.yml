@@ -1,0 +1,22 @@
+name: Windows
+
+on:
+  push:
+    branches: [ "main", "release-**" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - run: mvn -B package
+      - run: java -jar target/launcher-0.1.0.jar version
+      - run: java -jar target/launcher-0.1.0.jar fetch
+      - run: java -jar target/launcher-0.1.0.jar install 0.4.1
+      - run: java -jar target/launcher-0.1.0.jar launch 0.4.1
