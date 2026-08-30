@@ -5,11 +5,11 @@ import chromaforge.launcher.util.Platform;
 public class Runners {
     public static EngineRunner of(Platform.OS os) {
         switch (os) {
-            case Platform.OS.WINDOWS:
+            case WINDOWS:
                 return new WindowsRunner();
-            case Platform.OS.LINUX:
+            case LINUX:
                 return new LinuxRunner();
-            case Platform.OS.MACOS:
+            case MACOS:
                 return new MacRunner();
             default:
                 throw new RuntimeException("The platform is not supported");

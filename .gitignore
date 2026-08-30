@@ -1,1 +1,13 @@
-.vscode
+target/
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.user
+*.sln
+*.vcxproj
+*.filters
+
+# Runtime Artifacts
+chromaforge/

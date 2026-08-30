@@ -30,13 +30,13 @@ public class AssetInfo {
         String version = release.tagName.startsWith("v") ? release.tagName.substring(1) : release.tagName;
         String suffix;
         switch (platform) {
-            case Platform.OS.WINDOWS:
+            case WINDOWS:
                 suffix = "win64.zip";
                 break;
-            case Platform.OS.LINUX:
+            case LINUX:
                 suffix = "x86-64.AppImage";
                 break;
-            case Platform.OS.MACOS:
+            case MACOS:
                 suffix = "macos.dmg";
                 break;
             default:
