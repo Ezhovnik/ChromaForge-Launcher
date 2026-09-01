@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chromaforge.launcher.util.commands.*;
+import chromaforge.launcher.debug.Logger;
 
 public class CommandLine {
+    private static Logger logger = Logger.getLogger("command-line");
+
     private static final List<Command> allCommands = new ArrayList<>();
     static {
         allCommands.add(new FetchCommand());
@@ -32,7 +35,11 @@ public class CommandLine {
         }
         for (Command cmd : allCommands) {
             if (cmd.keyword.equals(keyword)) {
-                cmd.execute(args);
+                try {
+                    cmd.execute(args);
+                } catch (Exception e) {
+                    logger.error("An error occurred while running the command: " + e.getMessage());
+                }
                 return;
             }
         }

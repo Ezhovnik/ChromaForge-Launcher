@@ -9,8 +9,8 @@ public class Runners {
                 return new WindowsRunner();
             case LINUX:
                 return new LinuxRunner();
-            case MACOS:
-                return new MacRunner();
+            // case MACOS:
+            //     return new MacRunner();
             default:
                 throw new RuntimeException("The platform is not supported");
         }

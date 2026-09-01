@@ -7,9 +7,13 @@ import chromaforge.launcher.coders.json.JsonValue;
 import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.GitHubClient;
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.util.ConsoleColor;
+import chromaforge.launcher.debug.Logger;
 
 public class FetchCommand extends Command {
+    private static Logger logger = Logger.getLogger("fetch-command");
+
     public FetchCommand() {
         this.keyword = "fetch";
         this.args = "";
@@ -18,8 +22,17 @@ public class FetchCommand extends Command {
 
     @Override
     public void execute(String[] args) {
-        String json = new GitHubClient().fetchReleases();
+        logger.info("Fetching releases...");
+        String json;
+        try {
+            json = new GitHubClient().fetchReleases();
+        } catch (GitHubClientException e) {
+            logger.error("An error occurred while working with the GitHub API: " + e.getMessage());
+            return;
+        }
         JsonValue root = JsonParser.parse(json);
+        logger.info("Found " + ((JsonArray)root).items().size() + " release(s)");
+
         System.out.println("Available releases:");
         System.out.printf("  %-16s %-12s %s%n", "Version", "Date", "Status");
         System.out.println("  " + "-".repeat(50));

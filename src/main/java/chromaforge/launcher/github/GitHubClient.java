@@ -6,7 +6,11 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.net.URI;
 
+import chromaforge.launcher.debug.Logger;
+
 public class GitHubClient {
+    private static Logger logger = Logger.getLogger("github-client");
+
     private static final String RELEASES_URL = "https://api.github.com/repos/Ezhovnik/ChromaForge-v2/releases";
     private final HttpClient client = HttpClient.newHttpClient();
 
@@ -27,6 +31,7 @@ public class GitHubClient {
                 .build();
 
         try {
+            logger.info("Connecting to github...");
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {

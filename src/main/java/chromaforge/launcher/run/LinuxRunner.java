@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import chromaforge.launcher.debug.Logger;
+
 public class LinuxRunner implements EngineRunner {
+    private static Logger logger = Logger.getLogger("linux-runner");
+
     @Override
     public void run(Path coreDir) {
         Path appImage = coreDir.resolve("ChromaForge.AppImage").toAbsolutePath();
@@ -17,9 +21,10 @@ public class LinuxRunner implements EngineRunner {
                 .inheritIO();
 
         try {
+            logger.info("Starting engine...");
             Process process = pb.start();
-            int exitCode = process.waitFor();
-            System.out.println("The engine has terminated with code " + exitCode);
+            int code = process.waitFor();
+            logger.info("Engine has terminated with code " + code);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to run engine", e);
         }

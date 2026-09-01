@@ -19,5 +19,4 @@ jobs:
       - run: java -jar target/launcher-0.1.0.jar version
       - run: java -jar target/launcher-0.1.0.jar fetch
       - run: java -jar target/launcher-0.1.0.jar install 0.4.1
-      - run: ls -la cores/chromaforge-v0.4.1/
       - run: java -jar target/launcher-0.1.0.jar launch 0.4.1
