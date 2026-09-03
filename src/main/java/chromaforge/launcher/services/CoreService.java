@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.util.Iterator;
 
+import chromaforge.launcher.io.LauncherPaths;
+
 public class CoreService {
-    static public List<String> listInstalled() {
-        Path coresDir = getCoresDir();
+    static public List<String> listInstalled(LauncherPaths paths) {
+        Path coresDir = paths.getCoresDir();
         if (Files.exists(coresDir) && Files.isDirectory(coresDir)) {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(coresDir, 
                     path -> Files.isDirectory(path) && path.getFileName().toString().startsWith("chromaforge-"))) {
@@ -31,8 +33,8 @@ public class CoreService {
         return null;
     }
 
-    static public void removeVersion(String version) {
-        Path versionDir = getEngineDir(version);
+    static public void removeVersion(String version, LauncherPaths paths) {
+        Path versionDir = paths.getCoreDir(version);
         if (!Files.exists(versionDir)) {
             throw new RuntimeException("Version " + version + " is not installed");
         }
@@ -49,13 +51,5 @@ public class CoreService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to traverse directory " + versionDir, e);
         }
-    }
-
-    static public Path getEngineDir(String version) {
-        return Path.of("./cores/chromaforge-v" + version);
-    }
-
-    static public Path getCoresDir() {
-        return Path.of("./cores");
     }
 }

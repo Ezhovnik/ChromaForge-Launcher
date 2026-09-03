@@ -5,9 +5,11 @@ import java.util.List;
 
 import chromaforge.launcher.util.commands.*;
 import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.io.LauncherPaths;
 
 public class CommandLine {
     private static Logger logger = Logger.getLogger("command-line");
+    private LauncherPaths paths;
 
     private static final List<Command> allCommands = new ArrayList<>();
     static {
@@ -22,8 +24,9 @@ public class CommandLine {
 
     private String[] args;
 
-    public CommandLine(String[] args) {
+    public CommandLine(String[] args, LauncherPaths paths) {
         this.args = args;
+        this.paths = paths;
     }
 
     private void parse_args() {
@@ -36,7 +39,7 @@ public class CommandLine {
         for (Command cmd : allCommands) {
             if (cmd.keyword.equals(keyword)) {
                 try {
-                    cmd.execute(args);
+                    cmd.execute(args, paths);
                 } catch (Exception e) {
                     logger.error("An error occurred while running the command: " + e.getMessage());
                 }
@@ -45,8 +48,8 @@ public class CommandLine {
         }
     }
 
-    static public void parse_cmdline(String[] args) {
-        CommandLine parser = new CommandLine(args);
+    static public void parse_cmdline(String[] args, LauncherPaths paths) {
+        CommandLine parser = new CommandLine(args, paths);
         parser.parse_args();
     }
 }

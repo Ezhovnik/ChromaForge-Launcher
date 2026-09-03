@@ -2,6 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.services.LaunchService;
 import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.io.LauncherPaths;
 
 public class LaunchCommand extends Command {
     private static Logger logger = Logger.getLogger("launch-command");
@@ -13,10 +14,10 @@ public class LaunchCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
         logger.info("Launch '" + tagName + "'...");
 
-        LaunchService.launch(tagName);
+        LaunchService.launch(tagName, paths);
     }
 }

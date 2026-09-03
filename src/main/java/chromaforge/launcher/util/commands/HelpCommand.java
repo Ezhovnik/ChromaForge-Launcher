@@ -2,6 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import java.util.List;
 
+import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.LauncherVersion;
 
 public class HelpCommand extends Command {
@@ -16,7 +17,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args, LauncherPaths paths) {
         System.out.println("ChromaForge-Launcher v" + LauncherVersion.VERSION);
 
         for (Command cmd : commands) {

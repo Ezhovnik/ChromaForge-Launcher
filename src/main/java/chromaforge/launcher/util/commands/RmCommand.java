@@ -1,6 +1,7 @@
 package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 
 public class RmCommand extends Command {
@@ -13,15 +14,15 @@ public class RmCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args, LauncherPaths paths) {
         String version = nextArg(args);
         logger.info("Removing '" + version + "' ...");
 
         try {
-            CoreService.removeVersion(version);
-            System.out.println("Version " + version + "removed");
+            CoreService.removeVersion(version, paths);
+            System.out.println("Version " + version + " removed");
         } catch (Exception e) {
-            System.out.println("The version" + version + "could not be removed");
+            System.out.println("The version " + version + " could not be removed: " + e.getMessage());
         }
     }
 }

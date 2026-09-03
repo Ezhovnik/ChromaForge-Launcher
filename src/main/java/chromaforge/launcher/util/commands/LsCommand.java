@@ -2,6 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import java.util.List;
 
+import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 
 public class LsCommand extends Command {
@@ -12,8 +13,8 @@ public class LsCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
-        List<String> installed = CoreService.listInstalled();
+    public void execute(String[] args, LauncherPaths paths) {
+        List<String> installed = CoreService.listInstalled(paths);
         if (installed.isEmpty()) {
             System.out.println("No installed versions found");
         } else {

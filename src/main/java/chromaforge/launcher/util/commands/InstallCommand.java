@@ -3,6 +3,7 @@ package chromaforge.launcher.util.commands;
 import java.util.List;
 
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.debug.Logger;
@@ -17,9 +18,8 @@ public class InstallCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
-        logger.info("Installing '" + tagName + "'...");
 
         List<ReleaseInfo> releases = ReleaseService.fetchAll();
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
@@ -28,7 +28,6 @@ public class InstallCommand extends Command {
             return;
         }
 
-        InstallService.install(release);
-        logger.info("Successfuly installed " + tagName);
+        InstallService.install(release, paths);
     }
 }

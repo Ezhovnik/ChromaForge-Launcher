@@ -4,6 +4,7 @@ import java.util.List;
 
 import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleColor;
 import chromaforge.launcher.debug.Logger;
@@ -18,7 +19,7 @@ public class FetchCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args, LauncherPaths paths) {
         logger.info("Fetching releases...");
 
         List<ReleaseInfo> releases = ReleaseService.fetchAll();
