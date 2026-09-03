@@ -25,7 +25,7 @@ public final class WindowsInstaller implements Installer {
             downloader.download(asset.browserDownloadUrl, temp, null);
             unzipper.unzip(temp, installDir);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Failed to install " + asset.name, e);
+            throw new RuntimeException("Failed to install " + asset.name + " : " + e.getMessage(), e);
         } finally {
             if (temp != null) {
                 try {

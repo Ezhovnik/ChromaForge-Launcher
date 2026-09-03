@@ -1,18 +1,10 @@
 package chromaforge.launcher.util.commands;
 
-import java.nio.file.Path;
+import java.util.List;
 
-import chromaforge.launcher.coders.json.JsonArray;
-import chromaforge.launcher.coders.json.JsonObject;
-import chromaforge.launcher.coders.json.JsonParser;
-import chromaforge.launcher.coders.json.JsonValue;
-import chromaforge.launcher.github.AssetInfo;
-import chromaforge.launcher.github.BuildStatus;
-import chromaforge.launcher.github.GitHubClient;
-import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
-import chromaforge.launcher.install.Installers;
-import chromaforge.launcher.util.Platform;
+import chromaforge.launcher.services.InstallService;
+import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.debug.Logger;
 
 public class InstallCommand extends Command {
@@ -29,34 +21,14 @@ public class InstallCommand extends Command {
         String tagName = nextArg(args);
         logger.info("Installing '" + tagName + "'...");
 
-        Platform.OS os = Platform.detectOS();
-
-        String json;
-        try {
-            json = new GitHubClient().fetchReleases();
-        } catch (GitHubClientException e) {
-            logger.error("An error occurred while working with the GitHub API: " + e.getMessage());
+        List<ReleaseInfo> releases = ReleaseService.fetchAll();
+        ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
+        if (release == null) {
+            logger.error("Failed to find " + tagName);
             return;
         }
-        JsonValue root = JsonParser.parse(json);
 
-        ReleaseInfo release = null;
-        for (JsonValue item : ((JsonArray)root).items()) {
-            ReleaseInfo r = ReleaseInfo.fromJson((JsonObject)item);
-            if (BuildStatus.fromRelease(r) == BuildStatus.INSTALLABLE && r.tagName.equals("v" + tagName)) {
-                release = r;
-                break;
-            }
-        }
-        if (release == null) {
-            throw new RuntimeException("Release not found: " + tagName);
-        }
-
-        AssetInfo asset = AssetInfo.fromRelease(release);
-
-        Path installDir = Path.of("cores/chromaforge-" + release.tagName);
-        System.out.println("Installing " + release.tagName + " ...");
-        Installers.of(os).install(asset, installDir);
+        InstallService.install(release);
         logger.info("Successfuly installed " + tagName);
     }
 }

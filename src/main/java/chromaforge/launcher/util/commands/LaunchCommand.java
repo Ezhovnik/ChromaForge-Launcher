@@ -1,9 +1,6 @@
 package chromaforge.launcher.util.commands;
 
-import java.nio.file.Path;
-
-import chromaforge.launcher.run.Runners;
-import chromaforge.launcher.util.Platform;
+import chromaforge.launcher.services.LaunchService;
 import chromaforge.launcher.debug.Logger;
 
 public class LaunchCommand extends Command {
@@ -20,8 +17,6 @@ public class LaunchCommand extends Command {
         String tagName = nextArg(args);
         logger.info("Launch '" + tagName + "'...");
 
-        Platform.OS os = Platform.detectOS();
-        Path installDir = Path.of("cores/chromaforge-v" + tagName);
-        Runners.of(os).run(installDir);
+        LaunchService.launch(tagName);
     }
 }

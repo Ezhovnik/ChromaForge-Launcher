@@ -12,3 +12,4 @@ target/
 # Runtime Artifacts
 /chromaforge/
 cores/
+logs/

@@ -16,7 +16,7 @@ public class Unzipper {
                 ZipEntry entry = entries.nextElement();
 
                 Path target = targetDir.resolve(entry.getName()).normalize();
-                if (!target.startsWith(targetDir)) {
+                if (!target.startsWith(targetDir.normalize())) {
                     throw new IOException("Zip-slip attempt: " + entry.getName());
                 }
 
