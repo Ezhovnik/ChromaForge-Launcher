@@ -13,3 +13,4 @@ target/
 /chromaforge/
 cores/
 logs/
+/.chromaforge-launcher/checksums/*.sha256

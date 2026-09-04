@@ -1,5 +1,7 @@
 package chromaforge.launcher.util.commands;
 
+import chromaforge.launcher.services.CheckService;
+import chromaforge.launcher.services.CheckService.CheckException;
 import chromaforge.launcher.services.LaunchService;
 import chromaforge.launcher.debug.Logger;
 import chromaforge.launcher.io.LauncherPaths;
@@ -15,7 +17,21 @@ public class LaunchCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        String tagName = nextArg(args);
+        String tagName;
+        String nextArg = nextArg(args);
+        if (nextArg.equals("--check")) {
+            logger.info("Starting check...");
+            tagName = nextArg(args);
+            try {
+                CheckService.check(tagName, paths);
+            } catch (CheckException e) {
+                System.err.println("The check failed: " + e.getMessage());
+                return;
+            }
+            System.out.println("Сheck was successful");
+        } else {
+            tagName = nextArg;
+        }
         logger.info("Launch '" + tagName + "'...");
 
         LaunchService.launch(tagName, paths);

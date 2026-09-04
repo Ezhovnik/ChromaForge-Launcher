@@ -6,11 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
-import java.util.Iterator;
 
+import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
 
 public class CoreService {
@@ -38,18 +36,6 @@ public class CoreService {
         if (!Files.exists(versionDir)) {
             throw new RuntimeException("Version " + version + " is not installed");
         }
-        try (Stream<Path> walk = Files.walk(versionDir)) {
-            Iterator<Path> it = walk.sorted(Comparator.reverseOrder()).iterator();
-            while (it.hasNext()) {
-                Path p = it.next();
-                try {
-                    Files.deleteIfExists(p);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to delete " + p, e);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to traverse directory " + versionDir, e);
-        }
+        FileUtils.deleteRecursive(versionDir);
     }
 }

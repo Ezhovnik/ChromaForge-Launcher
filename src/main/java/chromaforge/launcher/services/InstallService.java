@@ -19,6 +19,7 @@ public class InstallService {
 
         logger.info("Installing " + release.tagName + " ...");
         Installers.of(os).install(asset, installDir);
+        CheckService.createChecksumsFile(release.tagName.substring(1), paths);
         logger.info("Successfully installed " + release.tagName);
     }
 }

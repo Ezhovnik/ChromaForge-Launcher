@@ -20,4 +20,20 @@ public class LauncherPaths {
     public Path getCoreDir(String v) {
         return getCoresDir().resolve("chromaforge-v" + v);
     }
+
+    public Path getMetaDir() {
+        Path path = workDir.resolve(".chromaforge-launcher");
+        if (!FileUtils.exists(path)) {
+            FileUtils.mkdir(path);
+        }
+        return path;
+    }
+
+    public Path getChecksumsDir() {
+        return getMetaDir().resolve("checksums");
+    }
+
+    public Path getChecksumsFile(String v) {
+        return getChecksumsDir().resolve(v + ".sha256");
+    }
 }
