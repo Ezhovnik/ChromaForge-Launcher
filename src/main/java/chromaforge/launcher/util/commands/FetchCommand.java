@@ -4,6 +4,7 @@ import java.util.List;
 
 import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
@@ -19,8 +20,16 @@ public class FetchCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        List<ReleaseInfo> releases = ReleaseService.fetchAll();
-        if (releases == null) return;
+        List<ReleaseInfo> releases;
+        try {
+            releases = ReleaseService.fetchAll();
+        } catch (GitHubClientException e) {
+            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to connect to GitHub: " + e.getMessage() + ConsoleColor.RESET);
+            return;
+        } catch (Exception e) {
+            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to fetch releases: " + e.getMessage() + ConsoleColor.RESET);
+            return;
+        }
 
         System.out.println("Found releases " + ConsoleColor.DIM + "(" + releases.size() + ")" + ConsoleColor.RESET);
         System.out.printf("  " + ConsoleColor.DIM + "%-16s %-12s %s" + ConsoleColor.RESET + "%n", "Version", "Date", "Status");

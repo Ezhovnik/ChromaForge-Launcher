@@ -9,20 +9,13 @@ import chromaforge.launcher.coders.json.JsonParser;
 import chromaforge.launcher.coders.json.JsonValue;
 import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.GitHubClient;
-import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 
 public class ReleaseService {
 
     static public List<ReleaseInfo> fetchAll() {
         String json;
-        try {
-            json = new GitHubClient().fetchReleases();
-        } catch (GitHubClientException e) {
-            System.err.println(ConsoleColor.RED + "Failed to connect to GitHub: " + e.getMessage() + ConsoleColor.RESET);
-            return null;
-        }
+        json = new GitHubClient().fetchReleases();
         JsonValue root = JsonParser.parse(json);
 
         List<ReleaseInfo> releases = new ArrayList<>();
@@ -35,8 +28,7 @@ public class ReleaseService {
                 }
             }
         } else {
-            System.err.println(ConsoleColor.RED + "Unexpected response from server" + ConsoleColor.RESET);
-            return null;
+            throw new RuntimeException("Unexpected response from server");
         }
         return releases;
     }
