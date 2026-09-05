@@ -1,7 +1,7 @@
 package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.io.LauncherPaths;
-import chromaforge.launcher.util.LauncherVersion;
+import chromaforge.launcher.util.ProjectInfo;
 
 public class VersionCommand extends Command {
     public VersionCommand() {
@@ -12,6 +12,6 @@ public class VersionCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        System.out.println("ChromaForge-Launcher v" + LauncherVersion.VERSION);
+        System.out.println(ProjectInfo.NAME + " v" + ProjectInfo.VERSION);
     }
 }

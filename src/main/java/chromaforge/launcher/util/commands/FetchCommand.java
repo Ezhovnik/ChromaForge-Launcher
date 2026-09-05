@@ -6,55 +6,55 @@ import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
-import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
 public class FetchCommand extends Command {
-    private static Logger logger = Logger.getLogger("fetch-command");
 
     public FetchCommand() {
         this.keyword = "fetch";
         this.args = "";
-        this.help = "display available releases";
+        this.help = "display releases";
     }
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        logger.info("Fetching releases...");
-
         List<ReleaseInfo> releases = ReleaseService.fetchAll();
-        logger.info("Found " + (releases == null ? 0 :releases.size()) + " release(s)");
         if (releases == null) return;
 
-        System.out.println("Available releases:");
-        System.out.printf("  %-16s %-12s %s%n", "Version", "Date", "Status");
-        System.out.println("  " + "-".repeat(50));
+        System.out.println("Found releases " + ConsoleColor.DIM + "(" + releases.size() + ")" + ConsoleColor.RESET);
+        System.out.printf("  " + ConsoleColor.DIM + "%-16s %-12s %s" + ConsoleColor.RESET + "%n", "Version", "Date", "Status");
+        System.out.println("  " + ConsoleColor.DIM + "-".repeat(50) + ConsoleColor.RESET);
         for (ReleaseInfo release : releases) {
             BuildStatus status = BuildStatus.fromRelease(release);
             String date = release.publishedAt.substring(0, 10);
-            String color;
+            String indicator;
+            String statusColor;
             switch (status) {
                 case INSTALLABLE:
-                    color = ConsoleUtils.ConsoleColor.GREEN;
+                    indicator = ConsoleColor.GREEN + ConsoleSymbols.CHECK + ConsoleColor.RESET;
+                    statusColor = ConsoleColor.GREEN;
                     break;
                 case WRONG_OS:
-                    color = ConsoleUtils.ConsoleColor.YELLOW;
+                    indicator = ConsoleColor.YELLOW + ConsoleSymbols.CROSS + ConsoleColor.RESET;
+                    statusColor = ConsoleColor.YELLOW;
                     break;
                 case NO_BUILD:
-                    color = ConsoleUtils.ConsoleColor.RED;
+                    indicator = ConsoleColor.RED + ConsoleSymbols.CROSS + ConsoleColor.RESET;
+                    statusColor = ConsoleColor.RED;
                     break;
                 default:
-                    color = ConsoleUtils.ConsoleColor.RESET;
+                    indicator = "?";
+                    statusColor = ConsoleColor.RESET;
             }
-            String indicator = status == BuildStatus.INSTALLABLE ? "[+]" : "[-]";
-            String statusText = color + status.name() + ConsoleColor.RESET;
             System.out.printf(
-                "  %-16s %-12s %s %s%n",
+                "  %-16s %-12s %s %s%s%s%n",
                 release.tagName.substring(1),
                 date,
                 indicator,
-                statusText
+                statusColor,
+                status.name(),
+                ConsoleColor.RESET
             );
         }
     }

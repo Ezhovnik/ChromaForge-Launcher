@@ -1,11 +1,11 @@
 package chromaforge.launcher.util.commands;
 
-import chromaforge.launcher.debug.Logger;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
 public class RmCommand extends Command {
-    private static Logger logger = Logger.getLogger("rm-command");
 
     public RmCommand() {
         this.keyword = "rm";
@@ -16,13 +16,13 @@ public class RmCommand extends Command {
     @Override
     public void execute(String[] args, LauncherPaths paths) {
         String version = nextArg(args);
-        logger.info("Removing '" + version + "' ...");
+        System.out.println("Removing '" + version + "'...");
 
         try {
             CoreService.removeVersion(version, paths);
-            System.out.println("Version " + version + " removed");
+            System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " Version " + version + " removed" + ConsoleColor.RESET);
         } catch (Exception e) {
-            System.out.println("The version " + version + " could not be removed: " + e.getMessage());
+            System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Could not remove " + version + ": " + e.getMessage() + ConsoleColor.RESET);
         }
     }
 }

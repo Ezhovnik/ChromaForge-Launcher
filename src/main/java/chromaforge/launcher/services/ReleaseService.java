@@ -11,17 +11,16 @@ import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.GitHubClient;
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
-import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 
 public class ReleaseService {
-    static private Logger logger = Logger.getLogger("release-service");
 
     static public List<ReleaseInfo> fetchAll() {
         String json;
         try {
             json = new GitHubClient().fetchReleases();
         } catch (GitHubClientException e) {
-            logger.error("An error occurred while working with the GitHub API: " + e.getMessage());
+            System.err.println(ConsoleColor.RED + "Failed to connect to GitHub: " + e.getMessage() + ConsoleColor.RESET);
             return null;
         }
         JsonValue root = JsonParser.parse(json);
@@ -33,12 +32,10 @@ public class ReleaseService {
                 if (item instanceof JsonObject) {
                     ReleaseInfo r = ReleaseInfo.fromJson((JsonObject) item);
                     releases.add(r);
-                } else {
-                    logger.warning("Skipping non-object element: " + item);
                 }
             }
         } else {
-            logger.error("Expected JSON array, got " + root.getClass());
+            System.err.println(ConsoleColor.RED + "Unexpected response from server" + ConsoleColor.RESET);
             return null;
         }
         return releases;

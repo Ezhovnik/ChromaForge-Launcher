@@ -16,11 +16,11 @@ public class CoreService {
         Path coresDir = paths.getCoresDir();
         if (Files.exists(coresDir) && Files.isDirectory(coresDir)) {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(coresDir, 
-                    path -> Files.isDirectory(path) && path.getFileName().toString().startsWith("chromaforge-"))) {
+                    path -> Files.isDirectory(path) && path.getFileName().toString().startsWith("chromaforge-v"))) {
                 List<String> versions = new ArrayList<>();
                 for (Path p : stream) {
                     String name = p.getFileName().toString();
-                    versions.add(name.substring("chromaforge-".length()));
+                    versions.add(name.substring("chromaforge-v".length()));
                 }
                 Collections.sort(versions);
                 return versions;

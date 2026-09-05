@@ -6,12 +6,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
+
+import chromaforge.launcher.util.ConsoleUtils;
+
 import java.io.IOException;
 
-import chromaforge.launcher.debug.Logger;
-
 public class FileUtils {
-    private static Logger logger = Logger.getLogger("file-utils");
 
     public static String readString(Path path) {
         try {
@@ -57,7 +57,7 @@ public class FileUtils {
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
-            logger.error("Failed to create directory " + path + " : " + e.getMessage());
+            System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " Failed to create directory " + path + ": " + e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class FileUtils {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            logger.error("Failed to create directory " + path + " : " + e.getMessage());
+            System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " Failed to create directory " + path + ": " + e.getMessage());
         }
     }
 

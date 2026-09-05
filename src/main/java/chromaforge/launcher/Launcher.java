@@ -1,12 +1,12 @@
 package chromaforge.launcher;
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
 import chromaforge.launcher.util.CommandLine;
-import chromaforge.launcher.util.LauncherVersion;
-import chromaforge.launcher.debug.Logger;
 import chromaforge.launcher.io.LauncherPaths;
 
 public class Launcher {
-    private static Logger logger = Logger.getLogger("main");
     private LauncherPaths paths;
 
     public Launcher() {
@@ -18,12 +18,10 @@ public class Launcher {
     }
 
     public static void main(String[] args) {
-        Logger.init("logs/launcher.log");
-        logger.info("ChromaForge-Launcher version: " + LauncherVersion.VERSION);
+        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
 
         Launcher launcher = new Launcher();
-
         CommandLine.parse_cmdline(args, launcher.getPaths());
-        logger.info("Launcher has finished successfully");
     }
 }

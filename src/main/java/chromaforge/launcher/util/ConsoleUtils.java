@@ -5,12 +5,25 @@ import chromaforge.launcher.interfaces.Progress;
 public class ConsoleUtils {
     public static class ConsoleColor {
         public static final String RESET = "\u001B[0m";
+        public static final String BOLD = "\u001B[1m";
+        public static final String DIM = "\u001B[2m";
+        public static final String UNDERLINE = "\u001B[4m";
+        public static final String RED = "\u001B[31m";
         public static final String GREEN = "\u001B[32m";
         public static final String YELLOW = "\u001B[33m";
-        public static final String RED = "\u001B[31m";
+        public static final String BLUE = "\u001B[34m";
+        public static final String MAGENTA = "\u001B[35m";
         public static final String CYAN = "\u001B[36m";
-        public static final String BOLD = "\u001B[1m";
-    };
+    }
+
+    public static class ConsoleSymbols {
+        public static final String CHECK = "\u2713";
+        public static final String CROSS = "\u2717";
+    }
+
+    public static void clearLine() {
+        System.out.print("\r\u001B[K");
+    }
 
     static public Progress consoleProgress() {
         return (done, total) -> {
@@ -18,14 +31,17 @@ public class ConsoleUtils {
             int barLength = 50;
             int filled = (int) (done * barLength / total);
 
-            StringBuilder bar = new StringBuilder("[");
+            StringBuilder bar = new StringBuilder("\r  [");
             for (int i = 0; i < barLength; i++) {
-                bar.append(i < filled ? "=" : "-");
+                if (i < filled) {
+                    bar.append(ConsoleColor.GREEN).append("=").append(ConsoleColor.RESET);
+                } else {
+                    bar.append(ConsoleColor.DIM).append("-").append(ConsoleColor.RESET);
+                }
             }
-            bar.append("] ").append(percent).append("%");
+            bar.append("] ").append(ConsoleColor.BOLD).append(percent).append("%").append(ConsoleColor.RESET);
 
-            System.out.print("\r" + bar);
-            System.out.flush();
+            System.out.print(bar);
 
             if (done == total) {
                 System.out.println();

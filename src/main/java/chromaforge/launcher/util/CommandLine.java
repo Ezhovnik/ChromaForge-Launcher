@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chromaforge.launcher.util.commands.*;
-import chromaforge.launcher.debug.Logger;
 import chromaforge.launcher.io.LauncherPaths;
 
 public class CommandLine {
-    private static Logger logger = Logger.getLogger("command-line");
     private LauncherPaths paths;
 
     private static final List<Command> allCommands = new ArrayList<>();
@@ -42,7 +40,7 @@ public class CommandLine {
                 try {
                     cmd.execute(args, paths);
                 } catch (Exception e) {
-                    logger.error("An error occurred while running the command: " + e.getMessage());
+                    System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " An error occurred while running the command: " + e.getMessage());
                 }
                 return;
             }

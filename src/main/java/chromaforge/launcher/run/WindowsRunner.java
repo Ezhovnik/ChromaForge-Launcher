@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-import chromaforge.launcher.debug.Logger;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
 public class WindowsRunner implements EngineRunner {
-    private static Logger logger = Logger.getLogger("windows-runner");
 
     @Override
     public void run(Path coreDir) {
@@ -17,17 +17,17 @@ public class WindowsRunner implements EngineRunner {
             .directory(coreDir.toFile())
             .redirectErrorStream(true);
         try {
-            logger.info("Starting engine...");
+            System.out.println("Starting engine...");
             Process engineProcess = pb.start();
 
             Thread outputReader = new Thread(() -> {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(engineProcess.getInputStream(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println("    " + line);
+                        System.out.println(ConsoleColor.DIM + " [Engine] " + ConsoleColor.RESET + line);
                     }
                 } catch (IOException e) {
-                    logger.error("Error reading engine output: " + e.getMessage());
+                    System.err.println(ConsoleSymbols.CROSS + " Error reading engine output: " + e.getMessage());
                 }
             });
             outputReader.setDaemon(true);
@@ -36,7 +36,11 @@ public class WindowsRunner implements EngineRunner {
             int code = engineProcess.waitFor();
             outputReader.join(1000);
 
-            logger.info("Engine has terminated with code " + code);
+            if (code == 0) {
+                System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " Engine has terminated with code " + code + ConsoleColor.RESET);
+            } else {
+                System.out.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Engine has terminated with code " + code + ConsoleColor.RESET);
+            }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to run engine", e);
         }

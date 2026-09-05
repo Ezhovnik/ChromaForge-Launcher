@@ -12,5 +12,4 @@ target/
 # Runtime Artifacts
 /chromaforge/
 cores/
-logs/
 /.chromaforge-launcher/checksums/*.sha256
