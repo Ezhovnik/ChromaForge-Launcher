@@ -22,6 +22,10 @@ public class InstallCommand extends Command {
         String tagName = nextArg(args);
 
         List<ReleaseInfo> releases = ReleaseService.fetchAll();
+        if (releases == null) {
+            logger.error("Failed to find " + tagName);
+            return;
+        }
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
         if (release == null) {
             logger.error("Failed to find " + tagName);

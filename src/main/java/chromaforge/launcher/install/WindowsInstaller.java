@@ -22,7 +22,8 @@ public final class WindowsInstaller implements Installer {
         try {
             temp = Files.createTempFile("chromaforge", ".zip");
             Files.createDirectories(installDir);
-            downloader.download(asset.browserDownloadUrl, temp, null);
+
+            downloader.download(asset.browserDownloadUrl, temp, consoleProgress());
             unzipper.unzip(temp, installDir);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to install " + asset.name + " : " + e.getMessage(), e);

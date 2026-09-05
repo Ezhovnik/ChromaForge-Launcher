@@ -16,6 +16,5 @@ public record LauncherVersion(int major, int minor, int patch) {
             Integer.parseInt(parts[1]),
             Integer.parseInt(parts[2])
         );
-
     }
 }

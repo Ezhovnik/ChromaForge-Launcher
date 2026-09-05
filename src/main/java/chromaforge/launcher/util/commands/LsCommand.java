@@ -15,7 +15,7 @@ public class LsCommand extends Command {
     @Override
     public void execute(String[] args, LauncherPaths paths) {
         List<String> installed = CoreService.listInstalled(paths);
-        if (installed.isEmpty()) {
+        if (installed == null || installed.isEmpty()) {
             System.out.println("No installed versions found");
         } else {
             System.out.println("Installed versions:");

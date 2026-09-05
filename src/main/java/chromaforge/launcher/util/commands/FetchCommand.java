@@ -23,7 +23,8 @@ public class FetchCommand extends Command {
         logger.info("Fetching releases...");
 
         List<ReleaseInfo> releases = ReleaseService.fetchAll();
-        logger.info("Found " + releases.size() + " release(s)");
+        logger.info("Found " + (releases == null ? 0 :releases.size()) + " release(s)");
+        if (releases == null) return;
 
         System.out.println("Available releases:");
         System.out.printf("  %-16s %-12s %s%n", "Version", "Date", "Status");

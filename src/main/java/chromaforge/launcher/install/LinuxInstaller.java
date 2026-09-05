@@ -25,7 +25,7 @@ public final class LinuxInstaller implements Installer {
             Path temp = Files.createTempFile("chromaforge", ".AppImage");
 
             try {
-                downloader.download(asset.browserDownloadUrl, temp, null);
+                downloader.download(asset.browserDownloadUrl, temp, consoleProgress());
                 Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 setExecutable(target);
             } finally {
