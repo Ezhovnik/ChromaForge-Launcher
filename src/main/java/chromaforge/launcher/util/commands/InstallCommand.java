@@ -43,7 +43,7 @@ public class InstallCommand extends Command {
             InstallService.install(release, paths);
             System.out.println(ConsoleSymbols.CHECK + " Successfully installed " + release.tagName);
         } catch (Exception e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to install" + release.tagName + " : " + e.getMessage() + ConsoleColor.RESET);
+            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to install " + release.tagName + " : " + e.getMessage() + ConsoleColor.RESET);
         }
     }
 }

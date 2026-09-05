@@ -22,7 +22,7 @@ public class LauncherPaths {
     }
 
     public Path getMetaDir() {
-        Path path = workDir.resolve(".chromaforge-launcher");
+        Path path = workDir.resolve("meta");
         if (!FileUtils.exists(path)) {
             FileUtils.mkdir(path);
         }
@@ -30,7 +30,11 @@ public class LauncherPaths {
     }
 
     public Path getChecksumsDir() {
-        return getMetaDir().resolve("checksums");
+        Path path = getMetaDir().resolve("checksums");
+        if (!FileUtils.exists(path)) {
+            FileUtils.mkdir(path);
+        }
+        return path;
     }
 
     public Path getChecksumsFile(String v) {

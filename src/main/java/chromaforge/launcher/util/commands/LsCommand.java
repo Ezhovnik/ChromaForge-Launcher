@@ -19,7 +19,7 @@ public class LsCommand extends Command {
         List<String> installed = CoreService.listInstalled(paths);
         if (installed == null || installed.isEmpty()) {
             System.out.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " No installed versions found" + ConsoleColor.RESET);
-            System.out.println(ConsoleColor.DIM + "  Use 'launcher.bat install <version>' to install an engine version" + ConsoleColor.RESET);
+            System.out.println(ConsoleColor.DIM + "  Use 'launcher install <version>' to install an engine version" + ConsoleColor.RESET);
             return;
         }
 

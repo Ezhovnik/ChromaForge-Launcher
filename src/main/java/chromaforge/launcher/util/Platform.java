@@ -21,4 +21,12 @@ public class Platform {
         }
         return OS.UNKNOWN;
     }
+
+    public static void configureEncoding() {
+        if (detectOS() == OS.WINDOWS) {
+            try {
+                new ProcessBuilder("cmd", "/c", "chcp 65001 > nul").inheritIO().start().waitFor();
+            } catch (Exception ignored) {}
+        }
+    }
 }

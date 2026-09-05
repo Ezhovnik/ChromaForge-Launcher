@@ -16,7 +16,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: mvn -B package
-      - run: java -jar target/launcher-0.1.0.jar version
-      - run: java -jar target/launcher-0.1.0.jar fetch
-      - run: java -jar target/launcher-0.1.0.jar install 0.4.1
-      - run: java -jar target/launcher-0.1.0.jar launch 0.4.1
+
+      - name: Package into exe (app-image)
+        shell: pwsh
+        run: |
+          if (Test-Path build\launcher) { Remove-Item -Recurse -Force build\launcher }
+          jpackage --input target/ --name launcher --main-jar launcher-0.1.0.jar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8' --win-console
+
+      - run: build\launcher\launcher.exe version
+      - run: build\launcher\launcher.exe fetch
+      - run: build\launcher\launcher.exe install 0.4.1
+      - run: build\launcher\launcher.exe launch 0.4.1

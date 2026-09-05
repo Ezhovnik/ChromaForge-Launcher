@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import chromaforge.launcher.util.CommandLine;
+import chromaforge.launcher.util.Platform;
 import chromaforge.launcher.io.LauncherPaths;
 
 public class Launcher {
@@ -18,6 +19,8 @@ public class Launcher {
     }
 
     public static void main(String[] args) {
+        Platform.configureEncoding();
+
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
         System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
 

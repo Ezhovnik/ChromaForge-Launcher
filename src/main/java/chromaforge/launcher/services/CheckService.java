@@ -45,26 +45,13 @@ public class CheckService {
         return hashes;
     }
 
-    private static List<String> ignoredPatterns = null;
+    private static final List<String> ignoredPatterns = List.of(
+        "res/content/"
+    );
 
-    private static List<String> loadIgnoredPatterns(LauncherPaths paths) {
-        if (ignoredPatterns != null) return ignoredPatterns;
-        Path ignoreFile = paths.getChecksumsDir().resolve(".checksumignore");
-        if (!Files.exists(ignoreFile)) {
-            ignoredPatterns = List.of();
-            return ignoredPatterns;
-        }
-        ignoredPatterns = FileUtils.readLines(ignoreFile).stream()
-            .map(String::trim)
-            .filter(l -> !l.isEmpty() && !l.startsWith("#"))
-            .toList();
-        return ignoredPatterns;
-    }
-
-    private static boolean isIgnored(Path file, Path versionDir, LauncherPaths paths) {
+    private static boolean isIgnored(Path file, Path versionDir) {
         String relative = versionDir.relativize(file).toString().replace('\\', '/');
-        List<String> patterns = loadIgnoredPatterns(paths);
-        for (String pattern : patterns) {
+        for (String pattern : ignoredPatterns) {
             if (pattern.endsWith("/")) {
                 String dirName = pattern.substring(0, pattern.length() - 1);
                 if (relative.startsWith(dirName + "/") || relative.equals(dirName)) {
@@ -90,7 +77,7 @@ public class CheckService {
 
         try (Stream<Path> walk = Files.walk(versionDir)) {
             for (Path file : walk.filter(Files::isRegularFile).toList()) {
-                if (isIgnored(file, versionDir, paths)) continue;
+                if (isIgnored(file, versionDir)) continue;
                 String relative = versionDir.relativize(file).toString();
                 try (InputStream is = Files.newInputStream(file)) {
                     String hash = Sha256.hash(is);
@@ -117,7 +104,7 @@ public class CheckService {
             String expectedHash = entry.getValue();
 
             Path file = versionDir.resolve(relativePath);
-            if (isIgnored(file, versionDir, paths)) continue;
+            if (isIgnored(file, versionDir)) continue;
 
             if (!Files.exists(file)) {
                 throw new CheckException("File " + file + " was not found");

@@ -27,7 +27,7 @@ public class HelpCommand extends Command {
         System.out.println();
 
         System.out.println("  " + ConsoleColor.BOLD + "Usage:" + ConsoleColor.RESET);
-        System.out.println("    " + ConsoleColor.CYAN + "launcher.bat" + ConsoleColor.RESET + " <command> [args]");
+        System.out.println("    " + ConsoleColor.CYAN + "launcher" + ConsoleColor.RESET + " <command> [args]");
         System.out.println();
 
         System.out.println("  " + ConsoleColor.BOLD + "Commands:" + ConsoleColor.RESET);
