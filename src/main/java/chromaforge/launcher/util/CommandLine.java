@@ -40,7 +40,7 @@ public class CommandLine {
                 try {
                     cmd.execute(args, paths);
                 } catch (Exception e) {
-                    System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " An error occurred while running the command: " + e.getMessage());
+                    ConsoleUtils.error("An error occurred while running the command: " + e.getMessage());
                 }
                 return;
             }

@@ -21,6 +21,14 @@ public class ConsoleUtils {
         public static final String CROSS = "\u2717";
     }
 
+    public static void success(String message) {
+        System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " " + message + ConsoleColor.RESET);
+    }
+
+    public static void error(String message) {
+        System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
+    }
+
     public static void clearLine() {
         System.out.print("\r\u001B[K");
     }

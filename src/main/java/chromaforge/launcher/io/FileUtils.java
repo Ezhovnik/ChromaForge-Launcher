@@ -57,7 +57,7 @@ public class FileUtils {
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
-            System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " Failed to create directory " + path + ": " + e.getMessage());
+            ConsoleUtils.error("Failed to create directory " + path + ": " + e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class FileUtils {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            System.err.println(ConsoleUtils.ConsoleSymbols.CROSS + " Failed to create directory " + path + ": " + e.getMessage());
+            ConsoleUtils.error("Failed to create directory " + path + ": " + e.getMessage());
         }
     }
 

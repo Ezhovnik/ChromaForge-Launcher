@@ -6,7 +6,6 @@ import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 import chromaforge.launcher.services.LaunchService;
 import chromaforge.launcher.io.LauncherPaths;
 
@@ -26,27 +25,27 @@ public class LaunchCommand extends Command {
             System.out.println("Starting check...");
             tagName = nextArg(args);
             if (!isInstalled(tagName, paths)) {
-                System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Version " + tagName + " is not installed" + ConsoleColor.RESET);
+                ConsoleUtils.error("Version " + tagName + " is not installed");
                 return;
             }
             try {
                 CheckService.check(tagName, paths, ConsoleUtils.consoleProgress());
             } catch (CheckException e) {
                 ConsoleUtils.clearLine();
-                System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " The check failed: " + e.getMessage() + ConsoleColor.RESET);
+                ConsoleUtils.error("The check failed: " + e.getMessage());
                 System.err.println(ConsoleColor.DIM + "  Try reinstalling with 'install " + tagName + "'" + ConsoleColor.RESET);
                 return;
             }
-            System.out.println(ConsoleSymbols.CHECK + " Check was successful");
+            ConsoleUtils.success("Check was successful");
         } else {
             tagName = nextArg;
             if (!isInstalled(tagName, paths)) {
-                System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Version " + tagName + " is not installed" + ConsoleColor.RESET);
+                ConsoleUtils.error("Version " + tagName + " is not installed");
                 return;
             }
         }
-        System.out.println("Launching '" + tagName + "'...");
 
+        System.out.println("Launching '" + tagName + "'...");
         LaunchService.launch(tagName, paths);
     }
 

@@ -7,6 +7,7 @@ import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
+import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
@@ -24,10 +25,10 @@ public class FetchCommand extends Command {
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to connect to GitHub: " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Failed to connect to GitHub: " + e.getMessage());
             return;
         } catch (Exception e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to fetch releases: " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
             return;
         }
 

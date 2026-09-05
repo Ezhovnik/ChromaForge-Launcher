@@ -37,5 +37,6 @@ public class CoreService {
             throw new RuntimeException("Version " + version + " is not installed");
         }
         FileUtils.deleteRecursive(versionDir);
+        FileUtils.deleteRecursive(paths.getChecksumsFile(version));
     }
 }

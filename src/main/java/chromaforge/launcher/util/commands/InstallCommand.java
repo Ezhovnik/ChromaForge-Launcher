@@ -7,8 +7,7 @@ import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public class InstallCommand extends Command {
     public InstallCommand() {
@@ -25,25 +24,25 @@ public class InstallCommand extends Command {
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to connect to GitHub: " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Failed to connect to GitHub: " + e.getMessage());
             return;
         } catch (Exception e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to fetch releases: " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
             return;
         }
 
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
         if (release == null) {
-            System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Version " + tagName + " not found. Run 'fetch' to see available versions" + ConsoleColor.RESET);
+            ConsoleUtils.error("Version " + tagName + " not found. Run 'fetch' to see available versions");
             return;
         }
 
         System.out.println("Installing " + release.tagName + "...");
         try {
             InstallService.install(release, paths);
-            System.out.println(ConsoleSymbols.CHECK + " Successfully installed " + release.tagName);
+            ConsoleUtils.success("Successfully installed " + release.tagName);
         } catch (Exception e) {
-            System.err.println(ConsoleColor.RED  + ConsoleSymbols.CROSS + " Failed to install " + release.tagName + " : " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Failed to install " + release.tagName + " : " + e.getMessage());
         }
     }
 }

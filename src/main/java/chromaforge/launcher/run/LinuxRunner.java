@@ -7,8 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
 public class LinuxRunner implements EngineRunner {
 
@@ -34,7 +34,7 @@ public class LinuxRunner implements EngineRunner {
                         System.out.println(ConsoleColor.DIM + " [Engine] " + ConsoleColor.RESET + line);
                     }
                 } catch (IOException e) {
-                    System.err.println(ConsoleSymbols.CROSS + " Error reading engine output: " + e.getMessage());
+                    ConsoleUtils.error("Error reading engine output: " + e.getMessage());
                 }
             });
             outputReader.setDaemon(true);
@@ -44,9 +44,9 @@ public class LinuxRunner implements EngineRunner {
             outputReader.join(1000);
 
             if (code == 0) {
-                System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " Engine has terminated with code " + code + ConsoleColor.RESET);
+                ConsoleUtils.success("Engine has terminated with code " + code);
             } else {
-                System.out.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Engine has terminated with code " + code + ConsoleColor.RESET);
+                ConsoleUtils.error("Engine has terminated with code " + code);
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to run engine", e);

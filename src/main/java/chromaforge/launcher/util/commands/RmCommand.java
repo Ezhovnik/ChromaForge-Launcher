@@ -2,8 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public class RmCommand extends Command {
 
@@ -20,9 +19,9 @@ public class RmCommand extends Command {
 
         try {
             CoreService.removeVersion(version, paths);
-            System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " Version " + version + " removed" + ConsoleColor.RESET);
+            ConsoleUtils.success("Version " + version + " removed");
         } catch (Exception e) {
-            System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " Could not remove " + version + ": " + e.getMessage() + ConsoleColor.RESET);
+            ConsoleUtils.error("Could not remove " + version + ": " + e.getMessage());
         }
     }
 }
