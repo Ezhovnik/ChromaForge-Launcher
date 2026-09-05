@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import chromaforge.launcher.coders.sha256.Sha256;
+import chromaforge.launcher.interfaces.Progress;
 import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
 
@@ -104,11 +105,13 @@ public class CheckService {
         writeChecksumsFile(checksums, hashes);
     }
 
-    public static void check(String v, LauncherPaths paths) {
+    public static void check(String v, LauncherPaths paths, Progress progress) {
         Path checksums = paths.getChecksumsFile(v);
         Map<String, String> hashes = readChecksumsFile(checksums);
 
         Path versionDir = paths.getCoreDir(v);
+        long total = hashes.size();
+        long done = 0;
         for (Map.Entry<String, String> entry : hashes.entrySet()) {
             String relativePath = entry.getKey();
             String expectedHash = entry.getValue();
@@ -128,6 +131,15 @@ public class CheckService {
                     throw new RuntimeException("Failed to check version " + v + " files", e);
                 }
             }
+
+            done++;
+            if (progress != null) {
+                progress.onProgress(done, total);
+            }
+        }
+
+        if (total == 0 && progress != null) {
+            progress.onProgress(0, 0);
         }
     }
 }

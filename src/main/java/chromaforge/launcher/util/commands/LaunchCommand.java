@@ -2,6 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
+import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.services.LaunchService;
 import chromaforge.launcher.debug.Logger;
 import chromaforge.launcher.io.LauncherPaths;
@@ -23,7 +24,7 @@ public class LaunchCommand extends Command {
             logger.info("Starting check...");
             tagName = nextArg(args);
             try {
-                CheckService.check(tagName, paths);
+                CheckService.check(tagName, paths, ConsoleUtils.consoleProgress());
             } catch (CheckException e) {
                 System.err.println("The check failed: " + e.getMessage());
                 return;

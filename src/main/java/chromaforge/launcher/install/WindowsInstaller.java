@@ -6,6 +6,7 @@ import java.nio.file.Path;
 
 import chromaforge.launcher.coders.zip.Unzipper;
 import chromaforge.launcher.github.AssetInfo;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public final class WindowsInstaller implements Installer {
     private final Downloader downloader;
@@ -23,7 +24,7 @@ public final class WindowsInstaller implements Installer {
             temp = Files.createTempFile("chromaforge", ".zip");
             Files.createDirectories(installDir);
 
-            downloader.download(asset.browserDownloadUrl, temp, consoleProgress());
+            downloader.download(asset.browserDownloadUrl, temp, ConsoleUtils.consoleProgress());
             unzipper.unzip(temp, installDir);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to install " + asset.name + " : " + e.getMessage(), e);

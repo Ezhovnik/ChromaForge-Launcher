@@ -15,7 +15,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import chromaforge.launcher.util.ConsoleColor;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public class Logger {
     private static final Map<String, Logger> instances = new ConcurrentHashMap<>();
@@ -142,7 +142,7 @@ public class Logger {
         public String format(LogRecord record) {
             String color = getColor(record.getLevel());
             String prefix = getLevelPrefix(record.getLevel());
-            String coloredPrefix = color + prefix + ConsoleColor.RESET;
+            String coloredPrefix = color + prefix + ConsoleUtils.ConsoleColor.RESET;
             String moduleName = extractModuleName(record.getLoggerName());
             String formattedModule = String.format("%20s", moduleName);
             String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS"));
@@ -151,21 +151,21 @@ public class Logger {
 
         private String getColor(Level level) {
             if (level == Level.FINER) {
-                return ConsoleColor.RESET;
+                return ConsoleUtils.ConsoleColor.RESET;
             }
             if (level == Level.FINE) {
-                return ConsoleColor.CYAN;
+                return ConsoleUtils.ConsoleColor.CYAN;
             }
             if (level == Level.INFO) {
-                return ConsoleColor.GREEN;
+                return ConsoleUtils.ConsoleColor.GREEN;
             }
             if (level == Level.WARNING) {
-                return ConsoleColor.YELLOW;
+                return ConsoleUtils.ConsoleColor.YELLOW;
             }
             if (level == Level.SEVERE) {
-                return ConsoleColor.RED + ConsoleColor.BOLD;
+                return ConsoleUtils.ConsoleColor.RED + ConsoleUtils.ConsoleColor.BOLD;
             }
-            return ConsoleColor.RESET;
+            return ConsoleUtils.ConsoleColor.RESET;
         }
 
         private String getLevelPrefix(Level level) {

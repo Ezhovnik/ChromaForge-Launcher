@@ -3,6 +3,7 @@ package chromaforge.launcher.util.commands;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public class CheckCommand extends Command {
     public CheckCommand() {
@@ -15,7 +16,7 @@ public class CheckCommand extends Command {
     public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
         try {
-            CheckService.check(tagName, paths);
+            CheckService.check(tagName, paths, ConsoleUtils.consoleProgress());
         } catch (CheckException e) {
             System.err.println("The check failed: " + e.getMessage());
             return;

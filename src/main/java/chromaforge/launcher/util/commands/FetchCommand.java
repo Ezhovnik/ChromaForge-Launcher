@@ -6,7 +6,8 @@ import chromaforge.launcher.github.BuildStatus;
 import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
-import chromaforge.launcher.util.ConsoleColor;
+import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 import chromaforge.launcher.debug.Logger;
 
 public class FetchCommand extends Command {
@@ -35,16 +36,16 @@ public class FetchCommand extends Command {
             String color;
             switch (status) {
                 case INSTALLABLE:
-                    color = ConsoleColor.GREEN;
+                    color = ConsoleUtils.ConsoleColor.GREEN;
                     break;
                 case WRONG_OS:
-                    color = ConsoleColor.YELLOW;
+                    color = ConsoleUtils.ConsoleColor.YELLOW;
                     break;
                 case NO_BUILD:
-                    color = ConsoleColor.RED;
+                    color = ConsoleUtils.ConsoleColor.RED;
                     break;
                 default:
-                    color = ConsoleColor.RESET;
+                    color = ConsoleUtils.ConsoleColor.RESET;
             }
             String indicator = status == BuildStatus.INSTALLABLE ? "[+]" : "[-]";
             String statusText = color + status.name() + ConsoleColor.RESET;
