@@ -17,6 +17,7 @@ public class CommandLine {
         allCommands.add(new LsCommand());
         allCommands.add(new RmCommand());
         allCommands.add(new VersionCommand());
+        allCommands.add(new WhereCommand());
         allCommands.add(new CheckCommand());
         allCommands.add(new HelpCommand(allCommands));
     }

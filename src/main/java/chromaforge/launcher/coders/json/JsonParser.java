@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import chromaforge.launcher.coders.BasicParser;
+import chromaforge.launcher.data.dv.dvArray;
+import chromaforge.launcher.data.dv.dvBool;
+import chromaforge.launcher.data.dv.dvDouble;
+import chromaforge.launcher.data.dv.dvLong;
+import chromaforge.launcher.data.dv.dvNull;
+import chromaforge.launcher.data.dv.dvObject;
+import chromaforge.launcher.data.dv.dvString;
+import chromaforge.launcher.data.dv.dvValue;
 
 public final class JsonParser extends BasicParser {
     public JsonParser(String source) {
         super(source);
     }
 
-    private JsonValue parseList() {
+    private dvValue parseList() {
         expect('[');
-        JsonArray list = new JsonArray(new ArrayList<>());
+        dvArray list = new dvArray(new ArrayList<>());
         while(peek() != ']') {
             if (peek() == '#') {
                 skipLine();
@@ -33,28 +41,28 @@ public final class JsonParser extends BasicParser {
         return list;
     }
 
-    private JsonValue parseValue() {
+    private dvValue parseValue() {
         char next = peek();
         if (next == '-' || next == '+' || isDigit(next)) {
             double numeric = parseNumber();
             if (numeric == Math.floor(numeric) && !Double.isInfinite(numeric) && Math.abs(numeric) <= Long.MAX_VALUE) {
-                return new JsonLong((long) numeric);
+                return new dvLong((long) numeric);
             }
-            return new JsonDouble(numeric);
+            return new dvDouble(numeric);
         }
         if (isIdentifierStart(next)) {
             String literal = parseName();
             switch (literal) {
                 case "true":
-                    return new JsonBool(true);
+                    return new dvBool(true);
                 case "false":
-                    return new JsonBool(false);
+                    return new dvBool(false);
                 case "inf":
-                    return new JsonDouble(Double.POSITIVE_INFINITY);
+                    return new dvDouble(Double.POSITIVE_INFINITY);
                 case "nan":
-                    return new JsonDouble(Double.NaN);
+                    return new dvDouble(Double.NaN);
                 case "null":
-                    return JsonNull.INSTANCE;
+                    return dvNull.INSTANCE;
             }
             throw new ParsingException("Invalid keyword: " + literal);
         }
@@ -66,14 +74,14 @@ public final class JsonParser extends BasicParser {
         }
         if (next == '"' || next == '\'') {
             pos++;
-            return new JsonString(parseString(next, true));
+            return new dvString(parseString(next, true));
         }
         throw new ParsingException("Unexpected character '" + next + "'");
     }
 
-    private JsonValue parseObject() {
+    private dvValue parseObject() {
         expect('{');
-        JsonObject object = new JsonObject(new LinkedHashMap<>());
+        dvObject object = new dvObject(new LinkedHashMap<>());
         while (peek() != '}') {
             if (peek() == '#') {
                 skipLine();
@@ -100,7 +108,7 @@ public final class JsonParser extends BasicParser {
         return object;
     }
 
-    private JsonValue parse() {
+    private dvValue parse() {
         char next = peek();
         if (next == '{') {
             return parseObject();
@@ -110,7 +118,7 @@ public final class JsonParser extends BasicParser {
         throw new ParsingException("'{' or '[' expected");
     }
 
-    public static JsonValue parse(String source) {
+    public static dvValue parse(String source) {
         JsonParser parser = new JsonParser(source);
         return parser.parse();
     }

@@ -1,9 +1,9 @@
 package chromaforge.launcher.github;
 
-import chromaforge.launcher.coders.json.JsonObject;
-import chromaforge.launcher.coders.json.JsonString;
+import chromaforge.launcher.data.dv.dvLong;
+import chromaforge.launcher.data.dv.dvObject;
+import chromaforge.launcher.data.dv.dvString;
 import chromaforge.launcher.util.Platform;
-import chromaforge.launcher.coders.json.JsonLong;
 
 public class AssetInfo {
     public final String name;
@@ -16,10 +16,10 @@ public class AssetInfo {
         this.browserDownloadUrl = browserDownloadUrl;
     }
 
-    public static AssetInfo fromJson(JsonObject object) {
-        String name = ((JsonString) object.entries().get("name")).value();
-        long size = ((JsonLong) object.entries().get("size")).value();
-        String browserDownloadUrl = ((JsonString) object.entries().get("browser_download_url")).value();
+    public static AssetInfo fromJson(dvObject object) {
+        String name = ((dvString) object.entries().get("name")).value();
+        long size = ((dvLong) object.entries().get("size")).value();
+        String browserDownloadUrl = ((dvString) object.entries().get("browser_download_url")).value();
 
         return new AssetInfo(name, size, browserDownloadUrl);
     }

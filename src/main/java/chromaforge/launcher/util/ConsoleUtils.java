@@ -29,6 +29,10 @@ public class ConsoleUtils {
         System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
     }
 
+    public static void warn(String message) {
+        System.err.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
+    }
+
     public static void clearLine() {
         System.out.print("\r\u001B[K");
     }

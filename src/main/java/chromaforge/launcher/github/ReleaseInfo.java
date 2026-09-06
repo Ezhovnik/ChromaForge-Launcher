@@ -3,11 +3,11 @@ package chromaforge.launcher.github;
 import java.util.ArrayList;
 import java.util.List;
 
-import chromaforge.launcher.coders.json.JsonArray;
-import chromaforge.launcher.coders.json.JsonBool;
-import chromaforge.launcher.coders.json.JsonObject;
-import chromaforge.launcher.coders.json.JsonString;
-import chromaforge.launcher.coders.json.JsonValue;
+import chromaforge.launcher.data.dv.dvArray;
+import chromaforge.launcher.data.dv.dvBool;
+import chromaforge.launcher.data.dv.dvObject;
+import chromaforge.launcher.data.dv.dvString;
+import chromaforge.launcher.data.dv.dvValue;
 
 public class ReleaseInfo {
     public final String tagName;
@@ -24,16 +24,16 @@ public class ReleaseInfo {
         this.assets = assets;
     }
 
-    public static ReleaseInfo fromJson(JsonObject object) {
-        String tagName = ((JsonString) object.entries().get("tag_name")).value();
-        String name = ((JsonString) object.entries().get("name")).value();
-        boolean isPreRelease = ((JsonBool) object.entries().get("prerelease")).value();
-        String publishedAt = ((JsonString) object.entries().get("published_at")).value();
-        JsonArray assets = (JsonArray) object.entries().get("assets");
+    public static ReleaseInfo fromJson(dvObject object) {
+        String tagName = ((dvString) object.entries().get("tag_name")).value();
+        String name = ((dvString) object.entries().get("name")).value();
+        boolean isPreRelease = ((dvBool) object.entries().get("prerelease")).value();
+        String publishedAt = ((dvString) object.entries().get("published_at")).value();
+        dvArray assets = (dvArray) object.entries().get("assets");
         List<AssetInfo> list = new ArrayList<>();
-        for (JsonValue item : assets.items()) {
-            if (item instanceof JsonObject) {
-                list.add(AssetInfo.fromJson((JsonObject)item));
+        for (dvValue item : assets.items()) {
+            if (item instanceof dvObject) {
+                list.add(AssetInfo.fromJson((dvObject)item));
             }
         }
 

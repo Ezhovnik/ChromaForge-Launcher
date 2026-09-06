@@ -12,10 +12,11 @@ public class InstallService {
 
     static public void install(ReleaseInfo release, LauncherPaths paths) {
         Platform.OS os = Platform.detectOS();
-        Path installDir = paths.getCoreDir(release.tagName.substring(1));
+        String version = release.tagName.substring(1);
+        Path installDir = paths.getCoreDir(version);
         AssetInfo asset = AssetInfo.fromRelease(release);
 
         Installers.of(os).install(asset, installDir);
-        CheckService.createChecksumsFile(release.tagName.substring(1), paths);
+        CheckService.createChecksumsFile(version, paths);
     }
 }

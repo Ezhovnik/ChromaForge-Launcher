@@ -4,8 +4,7 @@ import java.util.List;
 
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
+import chromaforge.launcher.util.ConsoleUtils;
 
 public class LsCommand extends Command {
     public LsCommand() {
@@ -18,15 +17,15 @@ public class LsCommand extends Command {
     public void execute(String[] args, LauncherPaths paths) {
         List<String> installed = CoreService.listInstalled(paths);
         if (installed == null || installed.isEmpty()) {
-            System.out.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " No installed versions found" + ConsoleColor.RESET);
-            System.out.println(ConsoleColor.DIM + "  Use 'launcher install <version>' to install an engine version" + ConsoleColor.RESET);
+            ConsoleUtils.warn("No installed versions found");
+            System.out.println(ConsoleUtils.ConsoleColor.DIM + "  Use 'launcher install <version>' to install an engine version" + ConsoleUtils.ConsoleColor.RESET);
             return;
         }
 
-        System.out.println("Installed versions " + ConsoleColor.DIM + "(" + installed.size() + ")" + ConsoleColor.RESET);
+        System.out.println("Installed versions " + ConsoleUtils.ConsoleColor.DIM + "(" + installed.size() + ")" + ConsoleUtils.ConsoleColor.RESET);
         for (String v : installed) {
-            System.out.println("  " + ConsoleColor.GREEN + ConsoleSymbols.CHECK + ConsoleColor.RESET
-                + " " + ConsoleColor.BOLD + "v" + v + ConsoleColor.RESET);
+            System.out.println("  " + ConsoleUtils.ConsoleColor.GREEN + ConsoleUtils.ConsoleSymbols.CHECK + ConsoleUtils.ConsoleColor.RESET
+                + " " + ConsoleUtils.ConsoleColor.BOLD + "v" + v + ConsoleUtils.ConsoleColor.RESET);
         }
     }
 }

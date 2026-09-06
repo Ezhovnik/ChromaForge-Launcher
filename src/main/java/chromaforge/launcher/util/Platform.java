@@ -1,5 +1,7 @@
 package chromaforge.launcher.util;
 
+import java.nio.file.Path;
+
 public class Platform {
     public enum OS {
         WINDOWS,
@@ -20,6 +22,19 @@ public class Platform {
             return OS.LINUX;
         }
         return OS.UNKNOWN;
+    }
+
+    public static Path getLocalAppDataDir() {
+        switch (detectOS()) {
+            case WINDOWS:
+                return Path.of(System.getenv("LOCALAPPDATA"));
+            case LINUX:
+                return Path.of(System.getProperty("user.home"), ".local", "share");
+            case MACOS:
+                return Path.of(System.getProperty("user.home"), "Library", "Application Support");
+            default:
+                return Path.of(".").toAbsolutePath();
+        }
     }
 
     public static void configureEncoding() {

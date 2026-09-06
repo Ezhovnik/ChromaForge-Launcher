@@ -54,6 +54,7 @@ public class FileUtils {
     }
 
     public static void mkdir(Path path) {
+        if (Files.exists(path)) return;
         try {
             Files.createDirectory(path);
         } catch (IOException e) {

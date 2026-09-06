@@ -4,6 +4,7 @@ import java.util.List;
 
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
@@ -19,6 +20,10 @@ public class InstallCommand extends Command {
     @Override
     public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
+        if (FileUtils.exists(paths.getCoreDir(tagName))) {
+            ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
+            return;
+        }
 
         List<ReleaseInfo> releases;
         try {
@@ -33,16 +38,16 @@ public class InstallCommand extends Command {
 
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
         if (release == null) {
-            ConsoleUtils.error("Version " + tagName + " not found. Run 'fetch' to see available versions");
+            ConsoleUtils.error("Version '" + tagName + "' not found. Run 'fetch' to see available versions");
             return;
         }
 
-        System.out.println("Installing " + release.tagName + "...");
+        System.out.println("Installing '" + tagName + "'...");
         try {
             InstallService.install(release, paths);
-            ConsoleUtils.success("Successfully installed " + release.tagName);
+            ConsoleUtils.success("Successfully installed '" + tagName + "'");
         } catch (Exception e) {
-            ConsoleUtils.error("Failed to install " + release.tagName + " : " + e.getMessage());
+            ConsoleUtils.error("Failed to install '" + tagName + "' : " + e.getMessage());
         }
     }
 }
