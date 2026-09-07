@@ -73,4 +73,8 @@ public class FileUtils {
     public static boolean exists(Path path) {
         return Files.exists(path);
     }
-}
+
+    public static boolean isDir(Path path) {
+        return Files.isDirectory(path);
+    }
+} 

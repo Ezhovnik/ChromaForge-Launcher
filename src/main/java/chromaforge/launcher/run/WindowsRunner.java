@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
@@ -12,8 +14,11 @@ import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 public class WindowsRunner implements EngineRunner {
 
     @Override
-    public void run(Path coreDir) {
-        ProcessBuilder pb = new ProcessBuilder(coreDir.resolve("ChromaForge.exe").toString())
+    public void run(Path coreDir, List<String> args) {
+        List<String> command = new ArrayList<>();
+        command.add(coreDir.resolve("ChromaForge.exe").toString());
+        command.addAll(args);
+        ProcessBuilder pb = new ProcessBuilder(command)
             .directory(coreDir.toFile())
             .redirectErrorStream(true);
         try {

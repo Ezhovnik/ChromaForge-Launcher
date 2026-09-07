@@ -19,17 +19,33 @@ public class LauncherPaths {
     }
 
     public Path getCoresDir() {
-        return dataDir.resolve("cores");
+        Path path = dataDir.resolve("cores");
+        if (!FileUtils.exists(path)) {
+            FileUtils.mkdirs(path);
+        }
+        return path;
     }
 
     public Path getCoreDir(String v) {
         return getCoresDir().resolve("chromaforge-v" + v);
     }
 
+    public Path getInstancesDir() {
+        Path path = dataDir.resolve("instances");
+        if (!FileUtils.exists(path)) {
+            FileUtils.mkdirs(path);
+        }
+        return path;
+    }
+
+    public Path getInstanceDir(String name) {
+        return getInstancesDir().resolve(name);
+    }
+
     public Path getMetaDir() {
         Path path = dataDir.resolve("meta");
         if (!FileUtils.exists(path)) {
-            FileUtils.mkdir(path);
+            FileUtils.mkdirs(path);
         }
         return path;
     }
@@ -37,7 +53,7 @@ public class LauncherPaths {
     public Path getChecksumsDir() {
         Path path = getMetaDir().resolve("checksums");
         if (!FileUtils.exists(path)) {
-            FileUtils.mkdir(path);
+            FileUtils.mkdirs(path);
         }
         return path;
     }

@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
@@ -13,13 +15,17 @@ import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 public class LinuxRunner implements EngineRunner {
 
     @Override
-    public void run(Path coreDir) {
+    public void run(Path coreDir, List<String> args) {
         Path appImage = coreDir.resolve("ChromaForge.AppImage").toAbsolutePath();
 
         if (!Files.isExecutable(appImage)) {
             throw new RuntimeException("Engine executable not found or not executable: " + appImage);
         }
-        ProcessBuilder pb = new ProcessBuilder(appImage.toString())
+
+        List<String> command = new ArrayList<>();
+        command.add(appImage.toString());
+        command.addAll(args);
+        ProcessBuilder pb = new ProcessBuilder(command)
                 .directory(coreDir.toFile())
                 .redirectErrorStream(true);
 
