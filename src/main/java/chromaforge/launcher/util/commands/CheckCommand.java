@@ -6,6 +6,7 @@ import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.CoreVersion;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 
 public class CheckCommand extends Command {
@@ -18,12 +19,13 @@ public class CheckCommand extends Command {
     @Override
     public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
-        if (!Files.isDirectory(paths.getCoreDir(tagName))) {
+        CoreVersion version = CoreVersion.parse(tagName);
+        if (!Files.isDirectory(paths.getCoreDir(version))) {
             ConsoleUtils.error("Version " + tagName + " is not installed");
             return;
         }
         try {
-            CheckService.check(tagName, paths, ConsoleUtils.consoleProgress());
+            CheckService.check(version, paths, ConsoleUtils.consoleProgress());
         } catch (CheckException e) {
             ConsoleUtils.clearLine();
             ConsoleUtils.error("The check failed: " + e.getMessage());

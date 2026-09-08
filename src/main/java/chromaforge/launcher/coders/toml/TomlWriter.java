@@ -45,7 +45,7 @@ public class TomlWriter {
             }
             sb.append(entry.getKey());
             sb.append(" = ");
-            toString(sb, object);
+            toString(sb, entry.getValue());
             index++;
         }
         sb.append('}');
@@ -55,14 +55,20 @@ public class TomlWriter {
         StringBuilder sb = new StringBuilder("");
         if (!name.isEmpty()) {
             sb.append('[');
-            sb.append(name);
+            if (name.matches("[A-Za-z0-9_-]+")) {
+                sb.append(name);
+            } else {
+                sb.append(
+                    '"' + name.replace("\\", "\\\\").replace("\"", "\\\"") + '"'
+                );
+            }
             sb.append("]\n");
         }
 
         for (Map.Entry<String, dvValue> entry : root.entries().entrySet()) {
             String key = entry.getKey();
             dvValue value = entry.getValue();
-            if (!((value instanceof dvObject) && (value instanceof dvArray))) {
+            if (!(value instanceof dvObject) && !(value instanceof dvArray)) {
                 sb.append(key);
                 sb.append(" = ");
                 if (value instanceof dvString) {
@@ -80,7 +86,10 @@ public class TomlWriter {
             String key = entry.getKey();
             dvValue value = entry.getValue();
             if (value instanceof dvObject) {
-                sb.append('\n');
+                if (sb.length() > 0) {
+                    sb.append('\n');
+                }
+
                 sb.append(stringify((dvObject) value, name.isEmpty() ? key : name + "." + key));
             } else if (value instanceof dvArray) {
                 sb.append(name.isEmpty() ? key : name + "." + key);

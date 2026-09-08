@@ -3,6 +3,8 @@ package chromaforge.launcher.io;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import chromaforge.launcher.util.CoreVersion;
+
 public class LauncherPaths {
     private final Path dataDir;
 
@@ -26,8 +28,12 @@ public class LauncherPaths {
         return path;
     }
 
-    public Path getCoreDir(String v) {
-        return getCoresDir().resolve("chromaforge-v" + v);
+    public Path getCoreDir(CoreVersion v) {
+        return getCoresDir().resolve("chromaforge-v" + v.toString());
+    }
+
+    public Path getCoresLockFile() {
+        return getCoresDir().resolve("lock.toml");
     }
 
     public Path getInstancesDir() {
@@ -40,6 +46,10 @@ public class LauncherPaths {
 
     public Path getInstanceDir(String name) {
         return getInstancesDir().resolve(name);
+    }
+
+    public Path getInstancesLockFile() {
+        return getInstancesDir().resolve("lock.toml");
     }
 
     public Path getMetaDir() {
@@ -58,8 +68,8 @@ public class LauncherPaths {
         return path;
     }
 
-    public Path getChecksumsFile(String v) {
-        return getChecksumsDir().resolve(v + ".sha256");
+    public Path getChecksumsFile(CoreVersion v) {
+        return getChecksumsDir().resolve(v.toString() + ".sha256");
     }
 
     static public Path getExeDir() {

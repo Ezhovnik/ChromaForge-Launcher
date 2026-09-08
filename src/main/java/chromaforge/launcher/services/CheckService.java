@@ -13,6 +13,7 @@ import chromaforge.launcher.coders.sha256.Sha256;
 import chromaforge.launcher.interfaces.Progress;
 import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
+import chromaforge.launcher.util.CoreVersion;
 
 public class CheckService {
     public static class CheckException extends RuntimeException {
@@ -71,7 +72,7 @@ public class CheckService {
         return false;
     }
 
-    public static void createChecksumsFile(String v, LauncherPaths paths) {
+    public static void createChecksumsFile(CoreVersion v, LauncherPaths paths) {
         Path versionDir = paths.getCoreDir(v);
         Map<String, String> hashes = new LinkedHashMap<>();
 
@@ -92,7 +93,7 @@ public class CheckService {
         writeChecksumsFile(checksums, hashes);
     }
 
-    public static void check(String v, LauncherPaths paths, Progress progress) {
+    public static void check(CoreVersion v, LauncherPaths paths, Progress progress) {
         Path checksums = paths.getChecksumsFile(v);
         Map<String, String> hashes = readChecksumsFile(checksums);
 

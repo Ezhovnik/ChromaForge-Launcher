@@ -22,7 +22,7 @@ public class NewCommand extends Command {
                 new InstanceInfo(instanceName, coreVersion),
                 paths
             );
-            ConsoleUtils.success("The instance '" + instanceName + "'was successfully created on engine version '" + coreVersion + "'");
+            ConsoleUtils.success("The instance '" + instanceName + "' was successfully created on engine version '" + coreVersion + "'");
         } catch (RuntimeException e) {
             ConsoleUtils.error("Failed to create new instance: " + e.getMessage());
         }

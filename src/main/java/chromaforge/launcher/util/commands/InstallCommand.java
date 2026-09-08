@@ -9,6 +9,7 @@ import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.CoreVersion;
 
 public class InstallCommand extends Command {
     public InstallCommand() {
@@ -20,7 +21,8 @@ public class InstallCommand extends Command {
     @Override
     public void execute(String[] args, LauncherPaths paths) {
         String tagName = nextArg(args);
-        if (FileUtils.exists(paths.getCoreDir(tagName))) {
+        CoreVersion version = CoreVersion.parse(tagName);
+        if (FileUtils.exists(paths.getCoreDir(version))) {
             ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
             return;
         }

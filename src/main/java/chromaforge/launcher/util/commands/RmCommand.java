@@ -3,6 +3,7 @@ package chromaforge.launcher.util.commands;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.CoreVersion;
 
 public class RmCommand extends Command {
 
@@ -14,14 +15,14 @@ public class RmCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        String version = nextArg(args);
-        System.out.println("Removing '" + version + "'...");
+        String tagName = nextArg(args);
+        System.out.println("Removing '" + tagName + "'...");
 
         try {
-            CoreService.removeVersion(version, paths);
-            ConsoleUtils.success("Version " + version + " removed");
+            CoreService.removeVersion(CoreVersion.parse(tagName), paths);
+            ConsoleUtils.success("Version '" + tagName + "' removed");
         } catch (Exception e) {
-            ConsoleUtils.error("Could not remove " + version + ": " + e.getMessage());
+            ConsoleUtils.error("Could not remove '" + tagName + "' : " + e.getMessage());
         }
     }
 }

@@ -20,6 +20,8 @@ public class CommandLine {
         allCommands.add(new WhereCommand());
         allCommands.add(new CheckCommand());
         allCommands.add(new NewCommand());
+        allCommands.add(new RmiCommand());
+        allCommands.add(new InstancesCommand());
         allCommands.add(new HelpCommand(allCommands));
     }
 
