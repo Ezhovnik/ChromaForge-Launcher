@@ -33,6 +33,10 @@ public class ConsoleUtils {
         System.err.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
     }
 
+    public static void tip(String message) {
+        System.err.println(ConsoleColor.DIM + message + ConsoleColor.RESET);
+    }
+
     public static void clearLine() {
         System.out.print("\r\u001B[K");
     }

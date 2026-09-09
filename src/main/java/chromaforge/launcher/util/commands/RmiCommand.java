@@ -14,12 +14,30 @@ public class RmiCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
-        String instanceName = nextArg(args);
-        System.out.println("Removing '" + instanceName + "'...");
+    protected void registerArgs() {
+        parser.flag("--force", "-f", "required to confirm deletion");
+    }
 
+    @Override
+    public void execute(String[] args, LauncherPaths paths) {
+        parser.parse(args, 1);
+
+        String instanceName = requiredArg(parser, 0, "instance name");
+
+        if (!parser.has("--force")) {
+            ConsoleUtils.error("Deletion requires '--force'");
+            return;
+        }
+
+        InstanceInfo inst = InstanceService.get(instanceName, paths);
+        if (inst == null) {
+            ConsoleUtils.error("Instance '" + instanceName + "' does not exist");
+            return;
+        }
+
+        System.out.println("Removing '" + instanceName + "'...");
         try {
-            InstanceService.remove(new InstanceInfo(instanceName, "0.0.0"), paths);
+            InstanceService.remove(inst, paths);
             ConsoleUtils.success("Instance '" + instanceName + "' removed");
         } catch (Exception e) {
             ConsoleUtils.error("Could not remove '" + instanceName + "' : " + e.getMessage());

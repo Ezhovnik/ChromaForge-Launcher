@@ -19,7 +19,7 @@ public class LsCommand extends Command {
         List<CoreVersion> installed = CoreService.listInstalled(paths);
         if (installed == null || installed.isEmpty()) {
             ConsoleUtils.warn("No installed versions found");
-            System.out.println(ConsoleUtils.ConsoleColor.DIM + "  Use 'launcher install <version>' to install an engine version" + ConsoleUtils.ConsoleColor.RESET);
+            ConsoleUtils.tip("  Use 'launcher install <version>' to install an engine version");
             return;
         }
 

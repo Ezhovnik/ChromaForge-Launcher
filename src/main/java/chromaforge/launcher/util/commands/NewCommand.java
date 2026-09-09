@@ -14,8 +14,10 @@ public class NewCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        String instanceName = nextArg(args);
-        String coreVersion = nextArg(args);
+        parser.parse(args, 1);
+
+        String instanceName = requiredArg(parser, 0, "name");
+        String coreVersion = requiredArg(parser, 1, "version");
 
         try {
             InstanceService.create(

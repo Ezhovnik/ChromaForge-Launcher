@@ -7,7 +7,6 @@ import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.CoreVersion;
-import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 
 public class CheckCommand extends Command {
     public CheckCommand() {
@@ -18,8 +17,11 @@ public class CheckCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        String tagName = nextArg(args);
+        parser.parse(args, 1);
+
+        String tagName = requiredArg(parser, 0, "version");
         CoreVersion version = CoreVersion.parse(tagName);
+
         if (!Files.isDirectory(paths.getCoreDir(version))) {
             ConsoleUtils.error("Version " + tagName + " is not installed");
             return;
@@ -29,7 +31,7 @@ public class CheckCommand extends Command {
         } catch (CheckException e) {
             ConsoleUtils.clearLine();
             ConsoleUtils.error("The check failed: " + e.getMessage());
-            System.err.println(ConsoleColor.DIM + "  Try reinstalling with 'install " + tagName + "'" + ConsoleColor.RESET);
+            ConsoleUtils.tip("  Try reinstalling with 'install " + tagName + "'");
             return;
         }
         ConsoleUtils.success("Check was successful");

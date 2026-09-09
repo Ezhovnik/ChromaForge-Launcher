@@ -20,8 +20,11 @@ public class InstallCommand extends Command {
 
     @Override
     public void execute(String[] args, LauncherPaths paths) {
-        String tagName = nextArg(args);
+        parser.parse(args, 1);
+
+        String tagName = requiredArg(parser, 0, "version");
         CoreVersion version = CoreVersion.parse(tagName);
+
         if (FileUtils.exists(paths.getCoreDir(version))) {
             ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
             return;

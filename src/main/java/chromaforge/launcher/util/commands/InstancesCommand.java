@@ -20,6 +20,7 @@ public class InstancesCommand extends Command {
         List<InstanceInfo> instances = InstanceService.list(paths);
         if (instances.isEmpty()) {
             ConsoleUtils.warn("No instances found");
+            ConsoleUtils.tip("  Use 'launcher new <name> <version>' to create a new instance");
             return;
         }
 
