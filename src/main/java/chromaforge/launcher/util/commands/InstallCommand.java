@@ -10,6 +10,7 @@ import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.CoreVersion;
+import chromaforge.launcher.util.ExitCode;
 
 public class InstallCommand extends Command {
     public InstallCommand() {
@@ -19,7 +20,7 @@ public class InstallCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         parser.parse(args, 1);
 
         String tagName = requiredArg(parser, 0, "version");
@@ -27,7 +28,7 @@ public class InstallCommand extends Command {
 
         if (FileUtils.exists(paths.getCoreDir(version))) {
             ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
-            return;
+            return ExitCode.USAGE;
         }
 
         List<ReleaseInfo> releases;
@@ -35,16 +36,16 @@ public class InstallCommand extends Command {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
             ConsoleUtils.error("Failed to connect to GitHub: " + e.getMessage());
-            return;
+            return ExitCode.FAILURE;
         } catch (Exception e) {
             ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
-            return;
+            return ExitCode.FAILURE;
         }
 
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
         if (release == null) {
             ConsoleUtils.error("Version '" + tagName + "' not found. Run 'fetch' to see available versions");
-            return;
+            return ExitCode.USAGE;
         }
 
         System.out.println("Installing '" + tagName + "'...");
@@ -53,6 +54,8 @@ public class InstallCommand extends Command {
             ConsoleUtils.success("Successfully installed '" + tagName + "'");
         } catch (Exception e) {
             ConsoleUtils.error("Failed to install '" + tagName + "' : " + e.getMessage());
+            return ExitCode.FAILURE;
         }
+        return ExitCode.SUCCESS;
     }
 }

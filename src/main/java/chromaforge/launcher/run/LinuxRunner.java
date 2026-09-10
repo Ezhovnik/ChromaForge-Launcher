@@ -9,13 +9,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 
 public class LinuxRunner implements EngineRunner {
 
     @Override
-    public void run(Path coreDir, List<String> args) {
+    public int run(Path coreDir, List<String> args) {
         Path appImage = coreDir.resolve("ChromaForge.AppImage").toAbsolutePath();
 
         if (!Files.isExecutable(appImage)) {
@@ -30,7 +29,6 @@ public class LinuxRunner implements EngineRunner {
                 .redirectErrorStream(true);
 
         try {
-            System.out.println("Starting engine...");
             Process engineProcess = pb.start();
 
             Thread outputReader = new Thread(() -> {
@@ -40,7 +38,7 @@ public class LinuxRunner implements EngineRunner {
                         System.out.println(ConsoleColor.DIM + " [Engine] " + ConsoleColor.RESET + line);
                     }
                 } catch (IOException e) {
-                    ConsoleUtils.error("Error reading engine output: " + e.getMessage());
+                    throw new RuntimeException("Error reading engine output: " + e.getMessage());
                 }
             });
             outputReader.setDaemon(true);
@@ -49,11 +47,7 @@ public class LinuxRunner implements EngineRunner {
             int code = engineProcess.waitFor();
             outputReader.join(1000);
 
-            if (code == 0) {
-                ConsoleUtils.success("Engine has terminated with code " + code);
-            } else {
-                ConsoleUtils.error("Engine has terminated with code " + code);
-            }
+            return code;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Failed to run engine", e);
         }

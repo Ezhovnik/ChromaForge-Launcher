@@ -5,6 +5,7 @@ import java.util.List;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.InstanceService;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.ExitCode;
 import chromaforge.launcher.util.InstanceInfo;
 
 public class InstancesCommand extends Command {
@@ -16,12 +17,12 @@ public class InstancesCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         List<InstanceInfo> instances = InstanceService.list(paths);
         if (instances.isEmpty()) {
             ConsoleUtils.warn("No instances found");
             ConsoleUtils.tip("  Use 'launcher new <name> <version>' to create a new instance");
-            return;
+            return ExitCode.SUCCESS;
         }
 
         System.out.println("Instances " + ConsoleUtils.ConsoleColor.DIM + "(" + instances.size() + ")" + ConsoleUtils.ConsoleColor.RESET);
@@ -30,5 +31,6 @@ public class InstancesCommand extends Command {
                 + " " + ConsoleUtils.ConsoleColor.BOLD + inst.name() + ConsoleUtils.ConsoleColor.RESET
                 + " " + ConsoleUtils.ConsoleColor.DIM + "(core v" + inst.coreVersion() + ")" + ConsoleUtils.ConsoleColor.RESET);
         }
+        return ExitCode.SUCCESS;
     }
 }

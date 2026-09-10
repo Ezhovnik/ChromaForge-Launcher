@@ -2,6 +2,7 @@ package chromaforge.launcher.util.commands;
 
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.ArgParser;
+import chromaforge.launcher.util.ExitCode;
 
 public abstract class Command {
     public String keyword;
@@ -17,7 +18,7 @@ public abstract class Command {
     protected void registerArgs() {
     }
 
-    public abstract void execute(String[] args, LauncherPaths paths);
+    public abstract ExitCode execute(String[] args, LauncherPaths paths);
 
     public String usage() {
         StringBuilder sb = new StringBuilder();

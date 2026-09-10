@@ -8,6 +8,7 @@ import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.ExitCode;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleSymbols;
 
@@ -20,16 +21,16 @@ public class FetchCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         List<ReleaseInfo> releases;
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
             ConsoleUtils.error("Failed to connect to GitHub: " + e.getMessage());
-            return;
+            return ExitCode.FAILURE;
         } catch (Exception e) {
             ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
-            return;
+            return ExitCode.FAILURE;
         }
 
         System.out.println("Found releases " + ConsoleColor.DIM + "(" + releases.size() + ")" + ConsoleColor.RESET);
@@ -67,5 +68,6 @@ public class FetchCommand extends Command {
                 ConsoleColor.RESET
             );
         }
+        return ExitCode.SUCCESS;
     }
 }

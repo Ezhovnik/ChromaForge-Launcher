@@ -4,6 +4,7 @@ import java.util.List;
 
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.ConsoleUtils;
+import chromaforge.launcher.util.ExitCode;
 import chromaforge.launcher.util.ConsoleUtils.ConsoleColor;
 import chromaforge.launcher.util.ProjectInfo;
 
@@ -18,19 +19,19 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         if (args.length > 1) {
             for (Command cmd : commands) {
                 if (cmd.keyword.equals(args[1])) {
                     System.out.println();
                     System.out.println(cmd.usage());
                     System.out.println();
-                    return;
+                    return ExitCode.SUCCESS;
                 }
             }
             ConsoleUtils.error("Unknown command: '" + args[1] + "'");
             System.out.println("  " + ConsoleColor.DIM + "Run 'help' to see all available commands" + ConsoleColor.RESET);
-            return;
+            return ExitCode.USAGE;
         }
 
         System.out.println();
@@ -57,5 +58,7 @@ public class HelpCommand extends Command {
         System.out.println("  " + ConsoleColor.DIM + "Launcher Repository: " + ProjectInfo.REPOSITORY + ConsoleColor.RESET);
         System.out.println("  " + ConsoleColor.DIM + "Engine Repository:   " + ProjectInfo.ENGINE_REPOSITORY + ConsoleColor.RESET);
         System.out.println();
+
+        return ExitCode.SUCCESS;
     }
 }

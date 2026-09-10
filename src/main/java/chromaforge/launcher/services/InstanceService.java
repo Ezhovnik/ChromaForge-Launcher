@@ -97,7 +97,7 @@ public class InstanceService {
         writeRegistry(paths, instances);
     }
 
-    static public void launch(InstanceInfo info, LauncherPaths paths) {
+    static public int launch(InstanceInfo info, LauncherPaths paths) {
         if (!CoreService.isInstalled(info.coreVersion(), paths)) {
             throw new RuntimeException("Core version " + info.coreVersion() + " is not installed");
         }
@@ -114,7 +114,7 @@ public class InstanceService {
             "--dir", instanceDir.toString(),
             "--project", coreDir.resolve("res").toString()
         );
-        Runners.of(os).run(coreDir, args);
+        return Runners.of(os).run(coreDir, args);
     }
 
     static public void remove(InstanceInfo info, LauncherPaths paths) {

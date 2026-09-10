@@ -6,6 +6,7 @@ import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.CoreVersion;
+import chromaforge.launcher.util.ExitCode;
 
 public class LsCommand extends Command {
     public LsCommand() {
@@ -15,12 +16,12 @@ public class LsCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         List<CoreVersion> installed = CoreService.listInstalled(paths);
         if (installed == null || installed.isEmpty()) {
             ConsoleUtils.warn("No installed versions found");
             ConsoleUtils.tip("  Use 'launcher install <version>' to install an engine version");
-            return;
+            return ExitCode.SUCCESS;
         }
 
         System.out.println("Installed versions " + ConsoleUtils.ConsoleColor.DIM + "(" + installed.size() + ")" + ConsoleUtils.ConsoleColor.RESET);
@@ -28,5 +29,6 @@ public class LsCommand extends Command {
             System.out.println("  " + ConsoleUtils.ConsoleColor.GREEN + ConsoleUtils.ConsoleSymbols.CHECK + ConsoleUtils.ConsoleColor.RESET
                 + " " + ConsoleUtils.ConsoleColor.BOLD + "v" + v.toString() + ConsoleUtils.ConsoleColor.RESET);
         }
+        return ExitCode.SUCCESS;
     }
 }

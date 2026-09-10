@@ -40,6 +40,7 @@ public class Launcher {
         System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
 
         Launcher launcher = new Launcher();
-        CommandLine.parse_cmdline(args, launcher.getPaths());
+        int code = CommandLine.parse_cmdline(args, launcher.getPaths()).code();
+        System.exit(code);
     }
 }

@@ -32,7 +32,7 @@ public class CommandLine {
         this.paths = paths;
     }
 
-    private void parse_args() {
+    private ExitCode parse_args() {
         String keyword;
         if (args.length == 0) {
             keyword = "help";
@@ -42,19 +42,21 @@ public class CommandLine {
         for (Command cmd : allCommands) {
             if (cmd.keyword.equals(keyword)) {
                 try {
-                    cmd.execute(args, paths);
+                    ExitCode code = cmd.execute(args, paths);
+                    return code;
                 } catch (Exception e) {
                     ConsoleUtils.error("An error occurred while running the command: " + e.getMessage());
+                    return ExitCode.FAILURE;
                 }
-                return;
             }
         }
         ConsoleUtils.warn("Unknown command '" + keyword + "'");
         ConsoleUtils.tip("  Run 'help' to see the available commands");
+        return ExitCode.USAGE;
     }
 
-    static public void parse_cmdline(String[] args, LauncherPaths paths) {
+    static public ExitCode parse_cmdline(String[] args, LauncherPaths paths) {
         CommandLine parser = new CommandLine(args, paths);
-        parser.parse_args();
+        return parser.parse_args();
     }
 }

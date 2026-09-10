@@ -7,6 +7,7 @@ import chromaforge.launcher.services.CheckService;
 import chromaforge.launcher.services.CheckService.CheckException;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.CoreVersion;
+import chromaforge.launcher.util.ExitCode;
 
 public class CheckCommand extends Command {
     public CheckCommand() {
@@ -16,7 +17,7 @@ public class CheckCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args, LauncherPaths paths) {
+    public ExitCode execute(String[] args, LauncherPaths paths) {
         parser.parse(args, 1);
 
         String tagName = requiredArg(parser, 0, "version");
@@ -24,7 +25,7 @@ public class CheckCommand extends Command {
 
         if (!Files.isDirectory(paths.getCoreDir(version))) {
             ConsoleUtils.error("Version " + tagName + " is not installed");
-            return;
+            return ExitCode.USAGE;
         }
         try {
             CheckService.check(version, paths, ConsoleUtils.consoleProgress());
@@ -32,8 +33,9 @@ public class CheckCommand extends Command {
             ConsoleUtils.clearLine();
             ConsoleUtils.error("The check failed: " + e.getMessage());
             ConsoleUtils.tip("  Try reinstalling with 'install " + tagName + "'");
-            return;
+            return ExitCode.FAILURE;
         }
         ConsoleUtils.success("Check was successful");
+        return ExitCode.SUCCESS;
     }
 }
