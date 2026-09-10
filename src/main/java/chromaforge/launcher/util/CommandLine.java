@@ -49,6 +49,8 @@ public class CommandLine {
                 return;
             }
         }
+        ConsoleUtils.warn("Unknown command '" + keyword + "'");
+        ConsoleUtils.tip("  Run 'help' to see the available commands");
     }
 
     static public void parse_cmdline(String[] args, LauncherPaths paths) {
