@@ -24,6 +24,7 @@ jobs:
 
       - run: ./build/launcher/bin/launcher version
       - run: ./build/launcher/bin/launcher fetch
+      - run: sudo apt-get update && sudo apt-get install -y libfuse2
       - run: ./build/launcher/bin/launcher install 0.4.1
       - run: ./build/launcher/bin/launcher new test 0.4.1
       - run: ./build/launcher/bin/launcher launch test
