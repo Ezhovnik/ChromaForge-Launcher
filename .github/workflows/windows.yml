@@ -26,4 +26,5 @@ jobs:
       - run: build\launcher\launcher.exe version
       - run: build\launcher\launcher.exe fetch
       - run: build\launcher\launcher.exe install 0.4.1
-      - run: build\launcher\launcher.exe launch 0.4.1
+      - run: build\launcher\launcher.exe new test 0.4.1
+      - run: build\launcher\launcher.exe launch test
