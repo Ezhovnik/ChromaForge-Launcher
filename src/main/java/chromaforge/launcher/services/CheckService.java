@@ -72,25 +72,22 @@ public class CheckService {
         return false;
     }
 
-    public static void createChecksumsFile(CoreVersion v, LauncherPaths paths) {
-        Path versionDir = paths.getCoreDir(v);
+    public static void createChecksumsFile(Path sourceDir, Path checksumsFile) {
         Map<String, String> hashes = new LinkedHashMap<>();
 
-        try (Stream<Path> walk = Files.walk(versionDir)) {
+        try (Stream<Path> walk = Files.walk(sourceDir)) {
             for (Path file : walk.filter(Files::isRegularFile).toList()) {
-                if (isIgnored(file, versionDir)) continue;
-                String relative = versionDir.relativize(file).toString();
+                if (isIgnored(file, sourceDir)) continue;
+                String relative = sourceDir.relativize(file).toString();
                 try (InputStream is = Files.newInputStream(file)) {
-                    String hash = Sha256.hash(is);
-                    hashes.put(relative, hash);
+                    hashes.put(relative, Sha256.hash(is));
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to create checksums file for " + v + " : " + e.getMessage());
+            throw new RuntimeException("Failed to create checksums file: " + e.getMessage());
         }
 
-        Path checksums = paths.getChecksumsFile(v);
-        writeChecksumsFile(checksums, hashes);
+        writeChecksumsFile(checksumsFile, hashes);
     }
 
     public static void check(CoreVersion v, LauncherPaths paths, Progress progress) {

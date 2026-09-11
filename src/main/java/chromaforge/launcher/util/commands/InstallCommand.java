@@ -4,8 +4,8 @@ import java.util.List;
 
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
-import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
+import chromaforge.launcher.services.CoreService;
 import chromaforge.launcher.services.InstallService;
 import chromaforge.launcher.services.ReleaseService;
 import chromaforge.launcher.util.ConsoleUtils;
@@ -26,7 +26,7 @@ public class InstallCommand extends Command {
         String tagName = requiredArg(parser, 0, "version");
         CoreVersion version = CoreVersion.parse(tagName);
 
-        if (FileUtils.exists(paths.getCoreDir(version))) {
+        if (CoreService.isInstalled(version, paths)) {
             ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
             return ExitCode.USAGE;
         }
@@ -51,7 +51,11 @@ public class InstallCommand extends Command {
         System.out.println("Installing '" + tagName + "'...");
         try {
             InstallService.install(release, paths);
-            ConsoleUtils.success("Successfully installed '" + tagName + "'");
+            if (CoreService.isInstalled(version, paths)) {
+                ConsoleUtils.success("Successfully installed '" + tagName + "'");
+            } else {
+                throw new RuntimeException("Failed to find the version after download");
+            }
         } catch (Exception e) {
             ConsoleUtils.error("Failed to install '" + tagName + "' : " + e.getMessage());
             return ExitCode.FAILURE;
