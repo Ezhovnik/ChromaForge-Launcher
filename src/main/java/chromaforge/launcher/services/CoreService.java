@@ -22,8 +22,11 @@ import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.CoreInfo;
 import chromaforge.launcher.util.CoreVersion;
 import chromaforge.launcher.util.InstanceInfo;
+import chromaforge.launcher.io.RegistryFormat;
 
 public class CoreService {
+    private static final long REGISTRY_FORMAT_VERSION = 1;
+
     static public List<CoreVersion> listInstalled(LauncherPaths paths) {
         List<CoreInfo> cores = readRegistry(paths);
         if (cores != null) {
@@ -74,6 +77,7 @@ public class CoreService {
         List<CoreInfo> cores = new ArrayList<>();
         dvValue root = TomlParser.parse(FileUtils.readString(file));
         if (root instanceof dvObject obj) {
+            RegistryFormat.check(obj, REGISTRY_FORMAT_VERSION);
             for (Map.Entry<String, dvValue> e : obj.entries().entrySet()) {
                 if (e.getValue() instanceof dvObject object) {
                     cores.add(CoreInfo.fromObject(e.getKey(), object));
@@ -90,6 +94,7 @@ public class CoreService {
             entry.entries().put("installed_at", new dvString(core.installedAt()));
             root.entries().put(core.version().toString(), entry);
         }
+        RegistryFormat.write(root, REGISTRY_FORMAT_VERSION);
         FileUtils.writeString(paths.getCoresLockFile(), TomlWriter.stringify(root, ""));
     }
 

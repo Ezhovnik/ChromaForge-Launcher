@@ -22,7 +22,7 @@ public class LaunchCommand extends Command {
 
         InstanceInfo inst = InstanceService.get(instanceName, paths);
         if (inst == null) {
-            ConsoleUtils.error("Instance with that name does not exist");
+            ConsoleUtils.error("Instance '" + instanceName + "' does not exist");
             return ExitCode.USAGE;
         }
 

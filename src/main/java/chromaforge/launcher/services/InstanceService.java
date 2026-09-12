@@ -1,11 +1,11 @@
 package chromaforge.launcher.services;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Path;
 
 import chromaforge.launcher.coders.toml.TomlParser;
 import chromaforge.launcher.coders.toml.TomlWriter;
@@ -18,25 +18,35 @@ import chromaforge.launcher.run.Runners;
 import chromaforge.launcher.util.CoreVersion;
 import chromaforge.launcher.util.InstanceInfo;
 import chromaforge.launcher.util.Platform;
+import chromaforge.launcher.io.RegistryFormat;
 
 public class InstanceService {
+    private static final long REGISTRY_FORMAT_VERSION = 1;
+
     static public List<InstanceInfo> list(LauncherPaths paths) {
+        List<InstanceInfo> instances = new ArrayList<>();
         Path file = paths.getInstancesLockFile();
         if (!FileUtils.exists(file)) {
-            return new ArrayList<>();
+            return instances;
         }
-        List<InstanceInfo> instances = new ArrayList<>();
+
         dvValue root = TomlParser.parse(FileUtils.readString(file));
         if (root instanceof dvObject obj) {
+            RegistryFormat.check(obj, REGISTRY_FORMAT_VERSION);
             for (Map.Entry<String, dvValue> e : obj.entries().entrySet()) {
                 if (e.getValue() instanceof dvObject entry) {
-                    CoreVersion coreVersion = new CoreVersion(0, 0, 0);
+                    CoreVersion coreVersion = null;
                     String createdAt = "";
+
                     dvValue v = entry.entries().get("core_version");
                     if (v instanceof dvString s) coreVersion = CoreVersion.parse(s.value());
+
                     v = entry.entries().get("created_at");
                     if (v instanceof dvString s) createdAt = s.value();
-                    instances.add(new InstanceInfo(e.getKey(), coreVersion, createdAt));
+
+                    if (coreVersion != null) {
+                        instances.add(new InstanceInfo(e.getKey(), coreVersion, createdAt));
+                    }
                 }
             }
         }
@@ -64,6 +74,7 @@ public class InstanceService {
             entry.entries().put("created_at", new dvString(inst.createdAt()));
             root.entries().put(inst.name(), entry);
         }
+        RegistryFormat.write(root, REGISTRY_FORMAT_VERSION);
         FileUtils.writeString(paths.getInstancesLockFile(), TomlWriter.stringify(root, ""));
     }
 
@@ -72,38 +83,28 @@ public class InstanceService {
             throw new RuntimeException("Invalid name for instance");
         }
 
-        Path instancePath = paths.getInstanceDir(info.name());
-        if (exists(info.name(), paths)) {
-            throw new RuntimeException("Instance with this name already exists");
+        List<InstanceInfo> instances = list(paths);
+        if (instances.stream().anyMatch(i -> i.name().equals(info.name()))) {
+            throw new RuntimeException("Instance '" + info.name() + "' already exists");
         }
 
         if (!CoreService.isInstalled(info.coreVersion(), paths)) {
             throw new RuntimeException("Core version " + info.coreVersion() + " is not installed");
         }
 
-        FileUtils.mkdir(instancePath);
+        FileUtils.mkdir(paths.getInstanceDir(info.name()));
 
-        dvObject instance = new dvObject(new LinkedHashMap<>());
-        instance.entries().put("core_version", new dvString(info.coreVersion().toString()));
-
-        FileUtils.writeString(
-            paths.getInstanceDir(info.name()).resolve("instance.toml"),
-            TomlWriter.stringify(instance, "") + "\n"
-        );
-
-        List<InstanceInfo> instances = list(paths);
-        instances.removeIf(i -> i.name().equals(info.name()));
         instances.add(info);
         writeRegistry(paths, instances);
     }
 
     static public int launch(InstanceInfo info, LauncherPaths paths) {
-        if (!CoreService.isInstalled(info.coreVersion(), paths)) {
-            throw new RuntimeException("Core version " + info.coreVersion() + " is not installed");
-        }
-
         if (!exists(info.name(), paths)) {
             throw new RuntimeException("Instance '" + info.name() +"' is not exists");
+        }
+
+        if (!CoreService.isInstalled(info.coreVersion(), paths)) {
+            throw new RuntimeException("Core version " + info.coreVersion() + " is not installed");
         }
 
         Path coreDir = paths.getCoreDir(info.coreVersion());
