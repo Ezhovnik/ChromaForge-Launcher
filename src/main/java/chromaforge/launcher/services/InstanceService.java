@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.nio.file.Path;
 
 import chromaforge.launcher.coders.toml.TomlParser;
@@ -22,6 +25,13 @@ import chromaforge.launcher.io.RegistryFormat;
 
 public class InstanceService {
     private static final long REGISTRY_FORMAT_VERSION = 1;
+
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\w\\-. ]+$");
+    private static final Set<String> RESERVED_NAMES = Set.of(
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+    );
 
     static public List<InstanceInfo> list(LauncherPaths paths) {
         List<InstanceInfo> instances = new ArrayList<>();
@@ -78,8 +88,21 @@ public class InstanceService {
         FileUtils.writeString(paths.getInstancesLockFile(), TomlWriter.stringify(root, ""));
     }
 
+    static private boolean checkName(String name) {
+        if (name == null || name.isBlank()
+            || !NAME_PATTERN.matcher(name).matches()
+            || name.endsWith(".") || name.endsWith(" ")) {
+            return false;
+        }
+        String stem = name.indexOf('.') >= 0 ? name.substring(0, name.indexOf('.')) : name;
+        if (RESERVED_NAMES.contains(stem.toUpperCase(Locale.ROOT))) {
+            return false;
+        }
+        return true;
+    }
+
     static public void create(InstanceInfo info, LauncherPaths paths) {
-        if (!info.name().matches("^[\\w\\-. ]+$")) {
+        if (!checkName(info.name())) {
             throw new RuntimeException("Invalid name for instance");
         }
 
@@ -98,7 +121,7 @@ public class InstanceService {
         writeRegistry(paths, instances);
     }
 
-    static public int launch(InstanceInfo info, LauncherPaths paths) {
+    static public int launch(InstanceInfo info, LauncherPaths paths, List<String> extraArgs) {
         if (!exists(info.name(), paths)) {
             throw new RuntimeException("Instance '" + info.name() +"' is not exists");
         }
@@ -110,11 +133,12 @@ public class InstanceService {
         Path coreDir = paths.getCoreDir(info.coreVersion());
         Path instanceDir = paths.getInstanceDir(info.name());
         Platform.OS os = Platform.detectOS();
-        List<String> args = Arrays.asList(
+        List<String> args = new ArrayList<>(Arrays.asList(
             "--res", coreDir.resolve("res").toString(),
             "--dir", instanceDir.toString(),
             "--project", coreDir.resolve("res").toString()
-        );
+        ));
+        args.addAll(extraArgs);
         return Runners.of(os).run(coreDir, args);
     }
 

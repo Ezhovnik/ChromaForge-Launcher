@@ -1,8 +1,5 @@
 package chromaforge.launcher.services;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,15 +26,15 @@ public class CoreService {
 
     static public List<CoreVersion> listInstalled(LauncherPaths paths) {
         List<CoreInfo> cores = readRegistry(paths);
-        if (cores != null) {
-            List<CoreVersion> versions = new ArrayList<>();
-            for (CoreInfo core : cores) {
-                versions.add(core.version());
-            }
-            Collections.sort(versions);
-            return versions;
+        if (cores == null) {
+            throw new RuntimeException("Could not find the file with version information (cores/lock.toml)");
         }
-        return scanInstalled(paths);
+        List<CoreVersion> versions = new ArrayList<>();
+        for (CoreInfo core : cores) {
+            versions.add(core.version());
+        }
+        Collections.sort(versions);
+        return versions;
     }
 
     static public boolean isInstalled(CoreVersion version, LauncherPaths paths) {
@@ -46,27 +43,6 @@ public class CoreService {
             return false;
         }
         return versions.contains(version);
-    }
-
-    static private List<CoreVersion> scanInstalled(LauncherPaths paths) {
-        Path coresDir = paths.getCoresDir();
-        if (Files.exists(coresDir) && Files.isDirectory(coresDir)) {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(coresDir, 
-                    path -> Files.isDirectory(path) && path.getFileName().toString().startsWith("chromaforge-v"))) {
-                List<CoreVersion> versions = new ArrayList<>();
-                for (Path p : stream) {
-                    String name = p.getFileName().toString();
-                    versions.add(
-                        CoreVersion.parse(name.substring("chromaforge-v".length()))
-                    );
-                }
-                Collections.sort(versions);
-                return versions;
-            } catch (IOException e) {
-                return null;
-            } 
-        }
-        return null;
     }
 
     static public List<CoreInfo> readRegistry(LauncherPaths paths) {

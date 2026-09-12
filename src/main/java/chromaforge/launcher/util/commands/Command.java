@@ -8,6 +8,7 @@ public abstract class Command {
     public String keyword;
     public String args;
     public String help;
+    public String long_help;
 
     protected final ArgParser parser = new ArgParser();
 
@@ -26,7 +27,7 @@ public abstract class Command {
         if (!args.isEmpty()) {
             sb.append(' ').append(args);
         }
-        sb.append("\n    ").append(help);
+        sb.append("\n    ").append(long_help != null ? long_help : help);
 
         String flags = parser.flagsHelp();
         if (!flags.isEmpty()) {

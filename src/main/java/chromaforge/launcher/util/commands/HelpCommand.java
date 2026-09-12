@@ -47,7 +47,7 @@ public class HelpCommand extends Command {
 
         System.out.println("  " + ConsoleColor.BOLD + "Commands:" + ConsoleColor.RESET);
         for (Command cmd : commands) {
-            System.out.print("    " + ConsoleColor.CYAN + ConsoleColor.BOLD + String.format("%-28s", cmd.keyword + " " + cmd.args) + ConsoleColor.RESET);
+            System.out.print("    " + ConsoleColor.CYAN + ConsoleColor.BOLD + String.format("%-45s", cmd.keyword + " " + cmd.args) + ConsoleColor.RESET);
             System.out.println("  " + ConsoleColor.DIM + cmd.help + ConsoleColor.RESET);
         }
 
