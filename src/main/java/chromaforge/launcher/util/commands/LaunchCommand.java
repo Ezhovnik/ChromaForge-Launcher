@@ -45,7 +45,7 @@ public class LaunchCommand extends Command {
             return ExitCode.USAGE;
         }
 
-        System.out.println("Launching '" + instanceName + "'...");
+        ConsoleUtils.stage("Launching '" + instanceName + "'...");
         int code = InstanceService.launch(inst, paths, engineArgs);
         if (code == 0) {
             ConsoleUtils.success("Engine has terminated with code " + code);

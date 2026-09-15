@@ -36,7 +36,7 @@ public class RmCommand extends Command {
             return ExitCode.USAGE;
         }
 
-        System.out.println("Removing '" + tagName + "'...");
+        ConsoleUtils.stage("Removing '" + tagName + "'...");
         try {
             CoreService.removeVersion(version, paths);
             ConsoleUtils.success("Version '" + tagName + "' removed");

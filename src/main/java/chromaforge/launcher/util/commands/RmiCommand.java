@@ -36,7 +36,7 @@ public class RmiCommand extends Command {
             return ExitCode.USAGE;
         }
 
-        System.out.println("Removing '" + instanceName + "'...");
+        ConsoleUtils.stage("Removing '" + instanceName + "'...");
         try {
             InstanceService.remove(inst, paths);
             ConsoleUtils.success("Instance '" + instanceName + "' removed");

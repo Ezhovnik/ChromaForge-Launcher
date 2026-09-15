@@ -48,7 +48,7 @@ public class InstallCommand extends Command {
             return ExitCode.USAGE;
         }
 
-        System.out.println("Installing '" + tagName + "'...");
+        ConsoleUtils.stage("Installing '" + tagName + "'...");
         try {
             InstallService.install(release, paths);
             if (CoreService.isInstalled(version, paths)) {

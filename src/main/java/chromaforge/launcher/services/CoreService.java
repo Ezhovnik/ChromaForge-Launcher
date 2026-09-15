@@ -27,7 +27,7 @@ public class CoreService {
     static public List<CoreVersion> listInstalled(LauncherPaths paths) {
         List<CoreInfo> cores = readRegistry(paths);
         if (cores == null) {
-            throw new RuntimeException("Could not find the file with version information (cores/lock.toml)");
+            return new ArrayList<>();
         }
         List<CoreVersion> versions = new ArrayList<>();
         for (CoreInfo core : cores) {

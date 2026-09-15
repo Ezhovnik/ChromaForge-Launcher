@@ -19,6 +19,7 @@ public class ConsoleUtils {
     public static class ConsoleSymbols {
         public static final String CHECK = "\u2713";
         public static final String CROSS = "\u2717";
+        public static final String ARROW = "\u2192";
     }
 
     public static void success(String message) {
@@ -31,6 +32,10 @@ public class ConsoleUtils {
 
     public static void warn(String message) {
         System.err.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
+    }
+
+    public static void stage(String message) {
+        System.err.println(ConsoleColor.CYAN + ConsoleSymbols.ARROW + " " + message + ConsoleColor.RESET);
     }
 
     public static void tip(String message) {
