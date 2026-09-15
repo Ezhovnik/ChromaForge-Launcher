@@ -2,6 +2,8 @@ package chromaforge.launcher.util.commands;
 
 import java.util.List;
 
+import chromaforge.launcher.github.AssetInfo;
+import chromaforge.launcher.util.StringUtils;
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.io.LauncherPaths;
@@ -50,9 +52,20 @@ public class InstallCommand extends Command {
             return ExitCode.USAGE;
         }
 
+        AssetInfo asset = AssetInfo.fromRelease(release);
+        if (asset == null) {
+            ConsoleUtils.error("Failed to find asset for download");
+            return ExitCode.FAILURE;
+        }
+
+        ConsoleUtils.tip("Release '" + tagName + "' found");
+        ConsoleUtils.tip(String.format("  %-15s %s", "File:", asset.name));
+        ConsoleUtils.tip(String.format("  %-15s %s", "Download size:", StringUtils.humanSize(asset.size)));
+        ConsoleUtils.tip(String.format("  %-15s %s", "Install:", paths.getCoreDir(version).toAbsolutePath()));
+
         ConsoleUtils.stage("Installing '" + tagName + "'...");
         try {
-            InstallService.install(release, paths);
+            InstallService.install(asset, CoreVersion.parse(release.tagName.substring(1)), paths);
             if (CoreService.isInstalled(version, paths)) {
                 ConsoleUtils.success("Successfully installed '" + tagName + "'");
             } else {

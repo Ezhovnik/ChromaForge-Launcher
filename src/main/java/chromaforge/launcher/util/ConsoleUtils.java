@@ -68,25 +68,42 @@ public class ConsoleUtils {
     }
 
     static public Progress consoleProgress() {
-        return (done, total) -> {
-            int percent = (int) (done * 100.0 / total);
-            int barLength = 50;
-            int filled = (int) (done * barLength / total);
+        return new Progress() {
+            private static final int BAR_LEN = 50;
+            private static final long THROTTLE_NS = 100_000_000;
+            private long lastPrintNs = 0;
 
-            StringBuilder bar = new StringBuilder("\r  [");
-            for (int i = 0; i < barLength; i++) {
-                if (i < filled) {
-                    bar.append(colored(ConsoleColor.GREEN, "="));
-                } else {
-                    bar.append(colored(ConsoleColor.DIM, "-"));
+            @Override
+            public void onProgress(long done, long total) {
+                if (total <= 0) {
+                    return;
                 }
-            }
-            bar.append("] ").append(colored(ConsoleColor.BOLD, percent + "%"));
 
-            out.print(bar);
+                long now = System.nanoTime();
+                boolean complete = done >= total;
+                if (!complete && now - lastPrintNs < THROTTLE_NS) {
+                    return;
+                }
+                lastPrintNs = now;
 
-            if (done == total) {
-                out.println();
+                int percent = (int) (done * 100 / total);
+                int filled = (int) (done * BAR_LEN / total);
+
+                StringBuilder bar = new StringBuilder("\r\u001B[K  [");
+                for (int i = 0; i < BAR_LEN; i++) {
+                    if (i < filled) {
+                        bar.append(colored(ConsoleColor.GREEN, "="));
+                    } else {
+                        bar.append(colored(ConsoleColor.DIM, "-"));
+                    }
+                }
+                bar.append("] ").append(colored(ConsoleColor.BOLD, percent + "%"));
+
+                out.print(bar);
+
+                if (complete) {
+                    out.println();
+                }
             }
         };
     }

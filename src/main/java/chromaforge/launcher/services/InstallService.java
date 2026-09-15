@@ -3,7 +3,6 @@ package chromaforge.launcher.services;
 import java.nio.file.Path;
 
 import chromaforge.launcher.github.AssetInfo;
-import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.install.Installers;
 import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
@@ -12,14 +11,13 @@ import chromaforge.launcher.util.Platform;
 
 public class InstallService {
 
-    static public void install(ReleaseInfo release, LauncherPaths paths) {
-        CoreVersion version = CoreVersion.parse(release.tagName.substring(1));
+    static public void install(AssetInfo asset, CoreVersion version, LauncherPaths paths) {
         Path finalDir = paths.getCoreDir(version);
         Path staging = null;
 
         try {
             staging = FileUtils.createTempDirectory(paths.getCoresDir(), ".chromaforge-v" + version + "-");
-            Installers.of(Platform.detectOS()).install(AssetInfo.fromRelease(release), staging);
+            Installers.of(Platform.detectOS()).install(asset, staging);
             CheckService.createChecksumsFile(staging, paths.getChecksumsFile(version));
             if (FileUtils.isDir(finalDir)) {
                 FileUtils.deleteRecursive(finalDir);
