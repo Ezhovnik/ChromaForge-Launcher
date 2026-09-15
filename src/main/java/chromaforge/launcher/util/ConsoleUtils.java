@@ -1,5 +1,7 @@
 package chromaforge.launcher.util;
 
+import java.io.PrintStream;
+
 import chromaforge.launcher.interfaces.Progress;
 
 public class ConsoleUtils {
@@ -19,31 +21,50 @@ public class ConsoleUtils {
     public static class ConsoleSymbols {
         public static final String CHECK = "\u2713";
         public static final String CROSS = "\u2717";
+        public static final String WARN = "!";
         public static final String ARROW = "\u2192";
     }
 
+    private static final PrintStream out = System.out;
+
+    private static final boolean colorEnabled = detectColorSupport();
+
+    private static boolean detectColorSupport() {
+        if (System.getenv("NO_COLOR") != null) {
+            return false;
+        }
+        return System.console() != null;
+    }
+
+    private static String colored(String code, String message) {
+        if (!colorEnabled) {
+            return message;
+        }
+        return code + message + ConsoleColor.RESET;
+    }
+
     public static void success(String message) {
-        System.out.println(ConsoleColor.GREEN + ConsoleSymbols.CHECK + " " + message + ConsoleColor.RESET);
+        out.println(colored(ConsoleColor.GREEN, ConsoleSymbols.CHECK + " " + message));
     }
 
     public static void error(String message) {
-        System.err.println(ConsoleColor.RED + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
+        out.println(colored(ConsoleColor.RED, ConsoleSymbols.CROSS + " " + message));
     }
 
     public static void warn(String message) {
-        System.err.println(ConsoleColor.YELLOW + ConsoleSymbols.CROSS + " " + message + ConsoleColor.RESET);
+        out.println(colored(ConsoleColor.YELLOW, ConsoleSymbols.WARN + " " + message));
     }
 
     public static void stage(String message) {
-        System.err.println(ConsoleColor.CYAN + ConsoleSymbols.ARROW + " " + message + ConsoleColor.RESET);
+        out.println(colored(ConsoleColor.CYAN, ConsoleSymbols.ARROW + " " + message));
     }
 
     public static void tip(String message) {
-        System.err.println(ConsoleColor.DIM + message + ConsoleColor.RESET);
+        out.println(colored(ConsoleColor.DIM, message));
     }
 
     public static void clearLine() {
-        System.out.print("\r\u001B[K");
+        out.print("\r\u001B[K");
     }
 
     static public Progress consoleProgress() {
@@ -55,17 +76,17 @@ public class ConsoleUtils {
             StringBuilder bar = new StringBuilder("\r  [");
             for (int i = 0; i < barLength; i++) {
                 if (i < filled) {
-                    bar.append(ConsoleColor.GREEN).append("=").append(ConsoleColor.RESET);
+                    bar.append(colored(ConsoleColor.GREEN, "="));
                 } else {
-                    bar.append(ConsoleColor.DIM).append("-").append(ConsoleColor.RESET);
+                    bar.append(colored(ConsoleColor.DIM, "-"));
                 }
             }
-            bar.append("] ").append(ConsoleColor.BOLD).append(percent).append("%").append(ConsoleColor.RESET);
+            bar.append("] ").append(colored(ConsoleColor.BOLD, percent + "%"));
 
-            System.out.print(bar);
+            out.print(bar);
 
             if (done == total) {
-                System.out.println();
+                out.println();
             }
         };
     }
