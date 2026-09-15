@@ -46,13 +46,14 @@ public class LaunchCommand extends Command {
         }
 
         ConsoleUtils.stage("Launching '" + instanceName + "'...");
+        long start = System.nanoTime();
         int code = InstanceService.launch(inst, paths, engineArgs);
+        double elapsed = (System.nanoTime() - start) / 1e9;
         if (code == 0) {
-            ConsoleUtils.success("Engine has terminated with code " + code);
-            return ExitCode.SUCCESS;
+            ConsoleUtils.success(String.format("Engine exited in %.1fs", elapsed));
         } else {
-            ConsoleUtils.error("Engine has terminated with code " + code);
-            return ExitCode.FAILURE;
+            ConsoleUtils.error(String.format("Engine exited with code %d in %.1fs", code, elapsed));
         }
+        return code == 0 ? ExitCode.SUCCESS : ExitCode.FAILURE;
     }
 }

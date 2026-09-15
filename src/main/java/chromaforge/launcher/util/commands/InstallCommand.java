@@ -6,6 +6,8 @@ import chromaforge.launcher.github.AssetInfo;
 import chromaforge.launcher.util.StringUtils;
 import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
+import chromaforge.launcher.interfaces.Progress;
+import chromaforge.launcher.install.InstallListener;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 import chromaforge.launcher.services.InstallService;
@@ -35,6 +37,7 @@ public class InstallCommand extends Command {
         }
 
         List<ReleaseInfo> releases;
+        Thread spinner = ConsoleUtils.startSpinner("Fetching releases");
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
@@ -43,6 +46,8 @@ public class InstallCommand extends Command {
         } catch (Exception e) {
             ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
             return ExitCode.FAILURE;
+        } finally {
+            ConsoleUtils.stopSpinner(spinner);
         }
 
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
@@ -63,9 +68,19 @@ public class InstallCommand extends Command {
         ConsoleUtils.tip(String.format("  %-15s %s", "Download size:", StringUtils.humanSize(asset.size)));
         ConsoleUtils.tip(String.format("  %-15s %s", "Install:", paths.getCoreDir(version).toAbsolutePath()));
 
-        ConsoleUtils.stage("Installing '" + tagName + "'...");
         try {
-            InstallService.install(asset, CoreVersion.parse(release.tagName.substring(1)), paths);
+            InstallService.install(asset, CoreVersion.parse(release.tagName.substring(1)), paths,
+                new InstallListener() {
+                    @Override
+                    public void onStatus(String status) {
+                        ConsoleUtils.stage(status + " '" + tagName + "'...");
+                    }
+
+                    @Override
+                    public Progress progress() {
+                        return ConsoleUtils.consoleProgress();
+                    }
+                });
             if (CoreService.isInstalled(version, paths)) {
                 ConsoleUtils.success("Successfully installed '" + tagName + "'");
             } else {

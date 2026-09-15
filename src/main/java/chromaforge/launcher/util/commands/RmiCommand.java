@@ -16,7 +16,7 @@ public class RmiCommand extends Command {
 
     @Override
     protected void registerArgs() {
-        parser.flag("--force", "-f", "required to confirm deletion");
+        parser.flag("--force", "-f", "skip the confirmation prompt");
     }
 
     @Override
@@ -25,14 +25,18 @@ public class RmiCommand extends Command {
 
         String instanceName = requiredArg(parser, 0, "instance name");
 
-        if (!parser.has("--force")) {
-            ConsoleUtils.error("Deletion requires '--force'");
-            return ExitCode.USAGE;
-        }
-
         InstanceInfo inst = InstanceService.get(instanceName, paths);
         if (inst == null) {
             ConsoleUtils.error("Instance '" + instanceName + "' does not exist");
+            return ExitCode.USAGE;
+        }
+
+        boolean confirmed = parser.has("--force");
+        if (!confirmed) {
+            confirmed = ConsoleUtils.confirmDeletion(instanceName);
+        }
+        if (!confirmed) {
+            ConsoleUtils.tip("  Deletion cancelled");
             return ExitCode.USAGE;
         }
 

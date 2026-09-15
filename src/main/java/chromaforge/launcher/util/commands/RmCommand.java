@@ -16,7 +16,7 @@ public class RmCommand extends Command {
 
     @Override
     protected void registerArgs() {
-        parser.flag("--force", "-f", "required to confirm deletion");
+        parser.flag("--force", "-f", "skip the confirmation prompt");
     }
 
     @Override
@@ -24,15 +24,19 @@ public class RmCommand extends Command {
         parser.parse(args, 1);
 
         String tagName = requiredArg(parser, 0, "version");
+        CoreVersion version = CoreVersion.parse(tagName);
 
-        if (!parser.has("--force")) {
-            ConsoleUtils.error("Deletion requires '--force'");
+        if (!CoreService.isInstalled(version, paths)) {
+            ConsoleUtils.error("Core version '" + tagName + "' is not installed");
             return ExitCode.USAGE;
         }
 
-        CoreVersion version = CoreVersion.parse(tagName);
-        if (!CoreService.isInstalled(version, paths)) {
-            ConsoleUtils.error("Core version '" + tagName + "' is not installed");
+        boolean confirmed = parser.has("--force");
+        if (!confirmed) {
+            confirmed = ConsoleUtils.confirmDeletion(tagName);
+        }
+        if (!confirmed) {
+            ConsoleUtils.tip("  Deletion cancelled");
             return ExitCode.USAGE;
         }
 

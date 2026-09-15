@@ -23,6 +23,7 @@ public class FetchCommand extends Command {
     @Override
     public ExitCode execute(String[] args, LauncherPaths paths) {
         List<ReleaseInfo> releases;
+        Thread spinner = ConsoleUtils.startSpinner("Fetching releases");
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
@@ -31,6 +32,8 @@ public class FetchCommand extends Command {
         } catch (Exception e) {
             ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
             return ExitCode.FAILURE;
+        } finally {
+            ConsoleUtils.stopSpinner(spinner);
         }
 
         System.out.println("Found releases " + ConsoleColor.DIM + "(" + releases.size() + ")" + ConsoleColor.RESET);

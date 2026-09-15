@@ -39,6 +39,16 @@ public class CommandLine {
         } else {
             keyword = args[0];
         }
+        switch (keyword) {
+            case "-h", "--help":
+                keyword = "help";
+                break;
+            case "-v", "--version":
+                keyword = "version";
+                break;
+            default:
+                break;
+        }
         for (Command cmd : allCommands) {
             if (cmd.keyword.equals(keyword)) {
                 try {

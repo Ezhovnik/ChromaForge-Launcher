@@ -9,7 +9,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import chromaforge.launcher.github.AssetInfo;
-import chromaforge.launcher.util.ConsoleUtils;
 
 public final class LinuxInstaller implements Installer {
     private final Downloader downloader;
@@ -19,14 +18,15 @@ public final class LinuxInstaller implements Installer {
     }
 
     @Override
-    public void install(AssetInfo asset, Path installDir) {
+    public void install(AssetInfo asset, Path installDir, InstallListener listener) {
         try {
             Files.createDirectories(installDir);
             Path target = installDir.resolve("ChromaForge.AppImage");
             Path temp = Files.createTempFile("chromaforge", ".AppImage");
 
             try {
-                downloader.download(asset.browserDownloadUrl, temp, ConsoleUtils.consoleProgress());
+                listener.onStatus("Downloading");
+                downloader.download(asset.browserDownloadUrl, temp, listener.progress());
                 Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 setExecutable(target);
             } finally {

@@ -12,7 +12,7 @@ public final class MacInstaller implements Installer {
     }
 
     @Override
-    public void install(AssetInfo asset, Path installDir) {
+    public void install(AssetInfo asset, Path installDir, InstallListener listener) {
         // Тут ничего нет...
     }
 }

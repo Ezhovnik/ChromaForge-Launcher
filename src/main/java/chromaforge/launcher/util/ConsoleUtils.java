@@ -67,6 +67,46 @@ public class ConsoleUtils {
         out.print("\r\u001B[K");
     }
 
+    public static Thread startSpinner(String message) {
+        if (System.console() == null) {
+            return null;
+        }
+        Thread spinner = new Thread(() -> {
+            char[] frames = { '|', '/', '-', '\\' };
+            int i = 0;
+            try {
+                while (true) {
+                    out.print("\r\u001B[K  " + frames[i % frames.length] + " " + message);
+                    i++;
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException ignored) {
+                out.print("\r\u001B[K");
+            }
+        }, "console-spinner");
+        spinner.setDaemon(true);
+        spinner.start();
+        return spinner;
+    }
+
+    public static void stopSpinner(Thread spinner) {
+        if (spinner != null) {
+            spinner.interrupt();
+        }
+    }
+
+    public static boolean confirmDeletion(String name) {
+        if (System.console() == null) {
+            return false;
+        }
+        warn("This action cannot be undone");
+        String answer = System.console().readLine("  Delete '" + name + "'? [y/N] ");
+        if (answer == null) {
+            return false;
+        }
+        return answer.trim().equalsIgnoreCase("y");
+    }
+
     static public Progress consoleProgress() {
         return new Progress() {
             private static final int BAR_LEN = 50;

@@ -5,5 +5,5 @@ import java.nio.file.Path;
 import chromaforge.launcher.github.AssetInfo;
 
 public interface Installer {
-    void install(AssetInfo asset, Path installDir);
+    void install(AssetInfo asset, Path installDir, InstallListener listener);
 }

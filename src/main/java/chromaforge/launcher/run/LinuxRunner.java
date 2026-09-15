@@ -35,7 +35,11 @@ public class LinuxRunner implements EngineRunner {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(engineProcess.getInputStream(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(ConsoleColor.DIM + " [Engine] " + ConsoleColor.RESET + line);
+                        if (line.isBlank()) {
+                            System.out.println();
+                        } else {
+                            System.out.println(ConsoleColor.DIM + " [Engine] " + ConsoleColor.RESET + line);
+                        }
                     }
                 } catch (IOException e) {
                     throw new RuntimeException("Error reading engine output: " + e.getMessage());
