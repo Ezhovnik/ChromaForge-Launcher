@@ -27,7 +27,8 @@ public class InstallCommand extends Command {
         CoreVersion version = CoreVersion.parse(tagName);
 
         if (CoreService.isInstalled(version, paths)) {
-            ConsoleUtils.warn("Version '" + tagName + "' already installed. Use 'rm' first to reinstall");
+            ConsoleUtils.warn("Version '" + tagName + "' already installed");
+            ConsoleUtils.tip("  Use 'rm' first to reinstall");
             return ExitCode.USAGE;
         }
 
@@ -44,7 +45,8 @@ public class InstallCommand extends Command {
 
         ReleaseInfo release = ReleaseService.findInstallable(releases, tagName);
         if (release == null) {
-            ConsoleUtils.error("Version '" + tagName + "' not found. Run 'fetch' to see available versions");
+            ConsoleUtils.error("Version '" + tagName + "' not found");
+            ConsoleUtils.tip("  Run 'fetch' to see available versions");
             return ExitCode.USAGE;
         }
 

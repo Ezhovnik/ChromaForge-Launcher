@@ -30,7 +30,7 @@ public class HelpCommand extends Command {
                 }
             }
             ConsoleUtils.error("Unknown command: '" + args[1] + "'");
-            System.out.println("  " + ConsoleColor.DIM + "Run 'help' to see all available commands" + ConsoleColor.RESET);
+            ConsoleUtils.tip("  Run 'help' to see all available commands");
             return ExitCode.USAGE;
         }
 
