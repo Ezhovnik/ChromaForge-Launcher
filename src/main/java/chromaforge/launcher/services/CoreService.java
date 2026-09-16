@@ -71,7 +71,7 @@ public class CoreService {
             root.entries().put(core.version().toString(), entry);
         }
         RegistryFormat.write(root, REGISTRY_FORMAT_VERSION);
-        FileUtils.writeString(paths.getCoresLockFile(), TomlWriter.stringify(root, ""));
+        FileUtils.writeStringAtomic(paths.getCoresLockFile(), TomlWriter.stringify(root, ""));
     }
 
     static public void registerVersion(CoreVersion version, LauncherPaths paths) {

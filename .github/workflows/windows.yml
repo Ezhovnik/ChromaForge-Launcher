@@ -15,17 +15,36 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - run: mvn -B package
+
+      - name: Build jar
+        run: mvn -B package
 
       - name: Package into exe (app-image)
         shell: pwsh
         run: |
           if (Test-Path build\launcher) { Remove-Item -Recurse -Force build\launcher }
-          jpackage --input target/ --name launcher --main-jar launcher-0.1.0.jar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8' --win-console
+          $mainJar = (Get-ChildItem target -Filter *.jar | Select-Object -First 1).Name
+          jpackage --input target/ --name launcher --main-jar $mainJar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8' --win-console
 
-      - run: build\launcher\launcher.exe version
-      - run: build\launcher\launcher.exe fetch
-      - run: build\launcher\launcher.exe install 0.4.1
-      - run: build\launcher\launcher.exe new test 0.4.1
-      - run: build\launcher\launcher.exe check 0.4.1
-      - run: build\launcher\launcher.exe launch test -- --headless
+      - name: Upload app-image
+        uses: actions/upload-artifact@v4
+        with:
+          name: launcher-windows
+          path: build/launcher
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: launcher-windows
+          path: launcher
+
+      - run: .\launcher\launcher.exe version
+      - run: .\launcher\launcher.exe fetch
+      - run: .\launcher\launcher.exe install 0.4.1
+      - run: .\launcher\launcher.exe new test 0.4.1
+      - run: .\launcher\launcher.exe check 0.4.1
+      - run: .\launcher\launcher.exe launch test -- --headless

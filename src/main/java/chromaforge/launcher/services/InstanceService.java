@@ -85,7 +85,7 @@ public class InstanceService {
             root.entries().put(inst.name(), entry);
         }
         RegistryFormat.write(root, REGISTRY_FORMAT_VERSION);
-        FileUtils.writeString(paths.getInstancesLockFile(), TomlWriter.stringify(root, ""));
+        FileUtils.writeStringAtomic(paths.getInstancesLockFile(), TomlWriter.stringify(root, ""));
     }
 
     static private boolean checkName(String name) {
@@ -133,11 +133,15 @@ public class InstanceService {
         Path coreDir = paths.getCoreDir(info.coreVersion());
         Path instanceDir = paths.getInstanceDir(info.name());
         Platform.OS os = Platform.detectOS();
-        List<String> args = new ArrayList<>(Arrays.asList(
-            "--res", coreDir.resolve("res").toString(),
-            "--dir", instanceDir.toString(),
-            "--project", coreDir.resolve("res").toString()
-        ));
+        List<String> args = new ArrayList<>();
+        if (os != Platform.OS.LINUX) {
+            args.addAll(Arrays.asList(
+                "--res", coreDir.resolve("res").toString(),
+                "--project", coreDir.resolve("res").toString()
+            ));
+        }
+        args.add("--dir");
+        args.add(instanceDir.toString());
         args.addAll(extraArgs);
         return Runners.of(os).run(coreDir, args);
     }

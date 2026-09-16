@@ -9,18 +9,24 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import chromaforge.launcher.interfaces.Progress;
 
 public class Downloader {
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(15);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(60);
+
     private final HttpClient client = HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NORMAL)
+        .connectTimeout(CONNECT_TIMEOUT)
         .build();
 
     public Path download(String url, Path target, Progress progress) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .header("User-Agent", "ChromaForge-Launcher")
+            .timeout(REQUEST_TIMEOUT)
             .GET()
             .build();
 

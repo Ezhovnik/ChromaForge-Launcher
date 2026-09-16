@@ -6,16 +6,18 @@ import chromaforge.launcher.interfaces.Progress;
 
 public class ConsoleUtils {
     public static class ConsoleColor {
-        public static final String RESET = "\u001B[0m";
-        public static final String BOLD = "\u001B[1m";
-        public static final String DIM = "\u001B[2m";
-        public static final String UNDERLINE = "\u001B[4m";
-        public static final String RED = "\u001B[31m";
-        public static final String GREEN = "\u001B[32m";
-        public static final String YELLOW = "\u001B[33m";
-        public static final String BLUE = "\u001B[34m";
-        public static final String MAGENTA = "\u001B[35m";
-        public static final String CYAN = "\u001B[36m";
+        private static final boolean ENABLED = ConsoleUtils.colorEnabled;
+
+        public static final String RESET = ENABLED ? "\u001B[0m" : "";
+        public static final String BOLD = ENABLED ? "\u001B[1m" : "";
+        public static final String DIM = ENABLED ? "\u001B[2m" : "";
+        public static final String UNDERLINE = ENABLED ? "\u001B[4m" : "";
+        public static final String RED = ENABLED ? "\u001B[31m" : "";
+        public static final String GREEN = ENABLED ? "\u001B[32m" : "";
+        public static final String YELLOW = ENABLED ? "\u001B[33m" : "";
+        public static final String BLUE = ENABLED ? "\u001B[34m" : "";
+        public static final String MAGENTA = ENABLED ? "\u001B[35m" : "";
+        public static final String CYAN = ENABLED ? "\u001B[36m" : "";
     }
 
     public static class ConsoleSymbols {

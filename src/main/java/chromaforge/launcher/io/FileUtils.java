@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.io.IOException;
 
-import chromaforge.launcher.util.ConsoleUtils;
-
 public class FileUtils {
 
     public static String readString(Path path) {
@@ -38,6 +36,25 @@ public class FileUtils {
         }
     }
 
+    public static void writeStringAtomic(Path path, String content) {
+        Path tmp = path.resolveSibling(path.getFileName() + ".tmp");
+        try {
+            Files.writeString(tmp, content);
+            try {
+                Files.move(tmp, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write to file " + path, e);
+        } finally {
+            try {
+                Files.deleteIfExists(tmp);
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
     public static void deleteRecursive(Path path) {
         try (Stream<Path> walk = Files.walk(path)) {
             Iterator<Path> it = walk.sorted(Comparator.reverseOrder()).iterator();
@@ -59,7 +76,7 @@ public class FileUtils {
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
-            ConsoleUtils.error("Failed to create directory " + path + ": " + e.getMessage());
+            throw new RuntimeException("Failed to create directory " + path, e);
         }
     }
 
@@ -67,7 +84,7 @@ public class FileUtils {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            ConsoleUtils.error("Failed to create directory " + path + ": " + e.getMessage());
+            throw new RuntimeException("Failed to create directory " + path, e);
         }
     }
 
