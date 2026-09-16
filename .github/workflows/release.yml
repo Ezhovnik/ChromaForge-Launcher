@@ -95,20 +95,31 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libfuse2 libgl1 libglx-mesa0 libopengl0 libegl1 libgbm1
 
-      - name: Smoke test
+      - name: Test (Linux)
+        if: runner.os == 'Linux'
         shell: bash
         run: |
-          if [ "$RUNNER_OS" = "Linux" ]; then
-            APP=app-image/launcher/bin/launcher
-          else
-            APP=app-image/launcher/launcher.exe
-          fi
+          chmod -R +x app-image/launcher
+          APP=app-image/launcher/bin/launcher
           "$APP" version
           "$APP" fetch
           "$APP" install 0.4.1
           "$APP" new test 0.4.1
           "$APP" check 0.4.1
           "$APP" launch test -- --headless
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Get-ChildItem app-image\launcher -Force | Select-Object Name, Length
+          $APP = (Resolve-Path 'app-image\launcher\launcher.exe').Path
+          & $APP version
+          & $APP fetch
+          & $APP install 0.4.1
+          & $APP new test 0.4.1
+          & $APP check 0.4.1
+          & $APP launch test -- --headless
 
   release:
     name: Publish release
