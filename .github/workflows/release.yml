@@ -40,9 +40,9 @@ jobs:
           rm -rf build/launcher
           MAIN_JAR=$(basename "$(ls target/*.jar | head -n1)")
           if [ "$RUNNER_OS" = "Linux" ]; then
-            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8'
+            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.png --java-options '-Dfile.encoding=UTF-8'
           else
-            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8' --win-console
+            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
           fi
 
       - name: Archive (Linux)

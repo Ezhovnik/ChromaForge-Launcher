@@ -24,7 +24,7 @@ jobs:
         run: |
           if (Test-Path build\launcher) { Remove-Item -Recurse -Force build\launcher }
           $mainJar = (Get-ChildItem target -Filter *.jar | Select-Object -First 1).Name
-          jpackage --input target/ --name launcher --main-jar $mainJar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8' --win-console
+          jpackage --input target/ --name launcher --main-jar $mainJar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
 
       - name: Upload app-image
         uses: actions/upload-artifact@v4

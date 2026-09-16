@@ -24,7 +24,7 @@ jobs:
         run: |
           rm -rf build/launcher
           MAIN_JAR=$(basename "$(ls target/*.jar | head -n1)")
-          jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --java-options '-Dfile.encoding=UTF-8'
+          jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.png --java-options '-Dfile.encoding=UTF-8'
 
       - name: Upload app-image
         uses: actions/upload-artifact@v4
