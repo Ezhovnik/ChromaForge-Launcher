@@ -8,12 +8,13 @@
 
     <groupId>chromaforge</groupId>
     <artifactId>launcher</artifactId>
-    <version>0.1.0</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <name>ChromaForge Launcher</name>
 
     <properties>
+        <revision>0.1.0</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

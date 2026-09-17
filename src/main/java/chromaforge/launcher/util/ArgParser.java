@@ -86,12 +86,12 @@ public class ArgParser {
 
         ArgC spec = aliases.get(name);
         if (spec == null) {
-            throw new RuntimeException("Unknown option: " + name);
+            throw new UsageException("Unknown option: " + name);
         }
 
         if (!spec.isOption) {
             if (inline != null) {
-                throw new RuntimeException("Flag " + name + " does not take a value");
+                throw new UsageException("Flag " + name + " does not take a value");
             }
             parsed.put(spec.longName, "true");
             return index;
@@ -100,7 +100,7 @@ public class ArgParser {
         String value = inline;
         if (value == null) {
             if (index + 1 >= args.length || args[index + 1].startsWith("-")) {
-                throw new RuntimeException("Missing value for " + name);
+                throw new UsageException("Missing value for " + name);
             }
             value = args[++index];
         }

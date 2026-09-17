@@ -3,6 +3,7 @@ package chromaforge.launcher.util.commands;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.ArgParser;
 import chromaforge.launcher.util.ExitCode;
+import chromaforge.launcher.util.UsageException;
 
 public abstract class Command {
     public String keyword;
@@ -38,7 +39,7 @@ public abstract class Command {
 
     protected String requiredArg(ArgParser parser, int index, String name) {
         if (parser.positionals().size() <= index) {
-            throw new RuntimeException("Missing argument '" + name + "'");
+            throw new UsageException("Missing argument '" + name + "'");
         }
         return parser.positionals().get(index);
     }

@@ -9,6 +9,13 @@ import chromaforge.launcher.data.dv.dvObject;
 import chromaforge.launcher.data.dv.dvString;
 
 public class TomlWriter {
+    private static String formatKey(String key) {
+        if (!key.isEmpty() && key.matches("[A-Za-z0-9_-]+") && !Character.isDigit(key.charAt(0))) {
+            return key;
+        }
+        return "\"" + key.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+    }
+
     private static void toString(StringBuilder sb, dvValue value) {
         if (value instanceof dvObject) {
             objectToString(sb, (dvObject) value);
@@ -43,7 +50,7 @@ public class TomlWriter {
             if (index > 0) {
                 sb.append(", ");
             }
-            sb.append(entry.getKey());
+            sb.append(formatKey(entry.getKey()));
             sb.append(" = ");
             toString(sb, entry.getValue());
             index++;
@@ -55,13 +62,7 @@ public class TomlWriter {
         StringBuilder sb = new StringBuilder("");
         if (!name.isEmpty()) {
             sb.append('[');
-            if (name.matches("[A-Za-z0-9_-]+")) {
-                sb.append(name);
-            } else {
-                sb.append(
-                    '"' + name.replace("\\", "\\\\").replace("\"", "\\\"") + '"'
-                );
-            }
+            sb.append(formatKey(name));
             sb.append("]\n");
         }
 

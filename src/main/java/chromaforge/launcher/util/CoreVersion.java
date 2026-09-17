@@ -9,13 +9,17 @@ public record CoreVersion(int major, int minor, int patch) implements Comparable
     public static CoreVersion parse(String versionString) {
         String[] parts = versionString.split("\\.");
         if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid version format: " + versionString);
+            throw new UsageException("Invalid version format: " + versionString);
         }
-        return new CoreVersion(
-            Integer.parseInt(parts[0]),
-            Integer.parseInt(parts[1]),
-            Integer.parseInt(parts[2])
-        );
+        try {
+            return new CoreVersion(
+                Integer.parseInt(parts[0]),
+                Integer.parseInt(parts[1]),
+                Integer.parseInt(parts[2])
+            );
+        } catch (NumberFormatException e) {
+            throw new UsageException("Invalid version format: " + versionString);
+        }
     }
 
     @Override

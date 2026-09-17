@@ -38,7 +38,7 @@ public class Platform {
     }
 
     public static void configureEncoding() {
-        if (detectOS() == OS.WINDOWS) {
+        if (detectOS() == OS.WINDOWS && System.console() != null) {
             try {
                 new ProcessBuilder("cmd", "/c", "chcp 65001 > nul").inheritIO().start().waitFor();
             } catch (Exception ignored) {}

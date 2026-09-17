@@ -6,16 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Sha256 {
-    private static MessageDigest digest;
-
-    static {
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Fatal: SHA-256 not supported", e);
-        }
-    }
-
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -25,7 +15,12 @@ public class Sha256 {
     }
 
     public static String hash(InputStream is) throws IOException {
-        digest.reset();
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Fatal: SHA-256 not supported", e);
+        }
         byte[] buffer = new byte[8192];
         int len;
         while ((len = is.read(buffer)) != -1) {

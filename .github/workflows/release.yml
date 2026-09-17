@@ -32,7 +32,15 @@ jobs:
           distribution: 'temurin'
 
       - name: Build jar
-        run: mvn -B package
+        run: mvn -B package -Drevision=${{ inputs.version }}
+
+      - name: Verify jar version
+        shell: bash
+        run: |
+          JAR=$(ls target/launcher-*.jar | head -n1)
+          OUT=$(java -jar "$JAR" version)
+          echo "$OUT"
+          echo "$OUT" | grep -qF "v${VERSION}" || { echo "Version mismatch: expected v${VERSION}"; exit 1; }
 
       - name: Package into app-image
         shell: bash

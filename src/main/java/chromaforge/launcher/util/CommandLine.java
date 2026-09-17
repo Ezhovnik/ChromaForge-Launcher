@@ -51,13 +51,8 @@ public class CommandLine {
         }
         for (Command cmd : allCommands) {
             if (cmd.keyword.equals(keyword)) {
-                try {
-                    ExitCode code = cmd.execute(args, paths);
-                    return code;
-                } catch (Exception e) {
-                    ConsoleUtils.error("An error occurred while running the command: " + e.getMessage());
-                    return ExitCode.FAILURE;
-                }
+                ExitCode code = cmd.execute(args, paths);
+                return code;
             }
         }
         ConsoleUtils.warn("Unknown command '" + keyword + "'");

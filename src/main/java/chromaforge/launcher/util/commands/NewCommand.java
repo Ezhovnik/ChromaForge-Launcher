@@ -5,6 +5,7 @@ import chromaforge.launcher.services.InstanceService;
 import chromaforge.launcher.util.ConsoleUtils;
 import chromaforge.launcher.util.ExitCode;
 import chromaforge.launcher.util.InstanceInfo;
+import chromaforge.launcher.util.UsageException;
 
 public class NewCommand extends Command {
     public NewCommand() {
@@ -15,18 +16,21 @@ public class NewCommand extends Command {
 
     @Override
     public ExitCode execute(String[] args, LauncherPaths paths) {
-        parser.parse(args, 1);
-
-        String instanceName = requiredArg(parser, 0, "name");
-        String coreVersion = requiredArg(parser, 1, "version");
-
         try {
+            parser.parse(args, 1);
+            String instanceName = requiredArg(parser, 0, "name");
+            String coreVersion = requiredArg(parser, 1, "version");
+
             InstanceService.create(
                 new InstanceInfo(instanceName, coreVersion),
                 paths
             );
             ConsoleUtils.success("The instance '" + instanceName + "' was successfully created on engine version '" + coreVersion + "'");
             return ExitCode.SUCCESS;
+        } catch (UsageException e) {
+            ConsoleUtils.error("Failed to create new instance: " + e.getMessage());
+            ConsoleUtils.tip("  Run 'help new' for usage");
+            return ExitCode.USAGE;
         } catch (RuntimeException e) {
             ConsoleUtils.error("Failed to create new instance: " + e.getMessage());
             return ExitCode.FAILURE;

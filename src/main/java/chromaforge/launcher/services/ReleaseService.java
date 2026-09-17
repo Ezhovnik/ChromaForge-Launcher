@@ -41,13 +41,4 @@ public class ReleaseService {
         }
         return null;
     }
-
-    static public ReleaseInfo findInstallable(List<ReleaseInfo> releases) {
-        for (ReleaseInfo release : releases) {
-            if (BuildStatus.fromRelease(release) == BuildStatus.INSTALLABLE) {
-                return release;
-            }
-        }
-        return null;
-    }
 }

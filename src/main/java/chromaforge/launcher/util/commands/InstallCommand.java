@@ -84,7 +84,8 @@ public class InstallCommand extends Command {
             if (CoreService.isInstalled(version, paths)) {
                 ConsoleUtils.success("Successfully installed '" + tagName + "'");
             } else {
-                throw new RuntimeException("Failed to find the version after download");
+                ConsoleUtils.error("Failed to find the version after download");
+                return ExitCode.FAILURE;
             }
         } catch (Exception e) {
             ConsoleUtils.error("Failed to install '" + tagName + "' : " + e.getMessage());
