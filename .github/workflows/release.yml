@@ -37,7 +37,7 @@ jobs:
       - name: Verify jar version
         shell: bash
         run: |
-          JAR=$(ls target/launcher-*.jar | head -n1)
+          JAR=$(ls target/ChromaForge-Launcher-*.jar | head -n1)
           OUT=$(java -jar "$JAR" version)
           echo "$OUT"
           echo "$OUT" | grep -qF "v${VERSION}" || { echo "Version mismatch: expected v${VERSION}"; exit 1; }
@@ -45,42 +45,42 @@ jobs:
       - name: Package into app-image
         shell: bash
         run: |
-          rm -rf build/launcher
+          rm -rf build/ChromaForge-Launcher
           MAIN_JAR=$(basename "$(ls target/*.jar | head -n1)")
           if [ "$RUNNER_OS" = "Linux" ]; then
-            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.png --java-options '-Dfile.encoding=UTF-8'
+            jpackage --input target/ --name ChromaForge-Launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.png --java-options '-Dfile.encoding=UTF-8'
           else
-            jpackage --input target/ --name launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
+            jpackage --input target/ --name ChromaForge-Launcher --main-jar "$MAIN_JAR" --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
           fi
 
       - name: Archive (Linux)
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          tar -czf "launcher-linux-${VERSION}.tar.gz" -C build launcher
-          cp target/launcher-*.jar "launcher-${VERSION}.jar"
+          tar -czf "ChromaForge-Launcher-linux-${VERSION}.tar.gz" -C build ChromaForge-Launcher
+          cp target/ChromaForge-Launcher-*.jar "ChromaForge-Launcher-${VERSION}.jar"
 
       - name: Archive (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Compress-Archive -Path build\launcher -DestinationPath "launcher-windows-$env:VERSION.zip" -Force
+          Compress-Archive -Path build\ChromaForge-Launcher -DestinationPath "ChromaForge-Launcher-windows-$env:VERSION.zip" -Force
 
       - name: Upload release files
         uses: actions/upload-artifact@v4
         with:
-          name: launcher-${{ runner.os }}
+          name: ChromaForge-Launcher-${{ runner.os }}
           path: |
-            launcher-*.tar.gz
-            launcher-*.zip
-            launcher-*.jar
+            ChromaForge-Launcher-*.tar.gz
+            ChromaForge-Launcher-*.zip
+            ChromaForge-Launcher-*.jar
           if-no-files-found: error
 
       - name: Upload app-image
         uses: actions/upload-artifact@v4
         with:
           name: app-image-${{ runner.os }}
-          path: build/launcher
+          path: build/ChromaForge-Launcher
           if-no-files-found: error
 
   test:
@@ -108,7 +108,7 @@ jobs:
         shell: bash
         run: |
           chmod -R +x app-image
-          APP=app-image/bin/launcher
+          APP=app-image/bin/ChromaForge-Launcher
           "$APP" version
           "$APP" fetch
           "$APP" install 0.4.1
@@ -121,7 +121,7 @@ jobs:
         shell: pwsh
         run: |
           Get-ChildItem app-image -Force | Select-Object Name, Length
-          $APP = (Resolve-Path 'app-image\launcher.exe').Path
+          $APP = (Resolve-Path 'app-image\ChromaForge-Launcher.exe').Path
           & $APP version
           & $APP fetch
           & $APP install 0.4.1

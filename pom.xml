@@ -21,6 +21,7 @@
     </properties>
 
     <build>
+        <finalName>ChromaForge-Launcher-${revision}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

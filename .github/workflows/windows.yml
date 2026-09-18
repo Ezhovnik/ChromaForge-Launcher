@@ -22,15 +22,15 @@ jobs:
       - name: Package into exe (app-image)
         shell: pwsh
         run: |
-          if (Test-Path build\launcher) { Remove-Item -Recurse -Force build\launcher }
+          if (Test-Path build\ChromaForge-Launcher) { Remove-Item -Recurse -Force build\ChromaForge-Launcher }
           $mainJar = (Get-ChildItem target -Filter *.jar | Select-Object -First 1).Name
-          jpackage --input target/ --name launcher --main-jar $mainJar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
+          jpackage --input target/ --name ChromaForge-Launcher --main-jar $mainJar --main-class chromaforge.launcher.Launcher --type app-image --dest build/ --icon dev/icon.ico --java-options '-Dfile.encoding=UTF-8' --win-console
 
       - name: Upload app-image
         uses: actions/upload-artifact@v4
         with:
-          name: launcher-windows
-          path: build/launcher
+          name: ChromaForge-Launcher-windows
+          path: build/ChromaForge-Launcher
           if-no-files-found: error
 
   test:
@@ -39,12 +39,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: launcher-windows
-          path: launcher
+          name: ChromaForge-Launcher-windows
+          path: ChromaForge-Launcher
 
-      - run: .\launcher\launcher.exe version
-      - run: .\launcher\launcher.exe fetch
-      - run: .\launcher\launcher.exe install 0.4.1
-      - run: .\launcher\launcher.exe new test 0.4.1
-      - run: .\launcher\launcher.exe check 0.4.1
-      - run: .\launcher\launcher.exe launch test -- --headless
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe version
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe fetch
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe install 0.4.1
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe new test 0.4.1
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe check 0.4.1
+      - run: .\ChromaForge-Launcher\ChromaForge-Launcher.exe launch test -- --headless

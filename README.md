@@ -78,8 +78,8 @@ launcher check 0.4.1             # проверить файлы движка в
 |`new <name> <version>`|Создать новый инстанс (мир)|
 |`instances`|Список существующих инстансов|
 |`launch <instance>`|Запустить инстанс|
-|`rmi <instance> --force`|Удалить инстанс|
-|`rm <version> --force`|Удалить версию движка (запрещено, пока её использует инстанс)|
+|`rmi <instance>`|Удалить инстанс|
+|`rm <version>`|Удалить версию движка (запрещено, пока её использует инстанс)|
 
 ### Передача аргументов движку
 
@@ -137,13 +137,15 @@ ChromaForge-Launcher/
 mvn -B package
 ```
 
-Результат — `target/launcher-0.1.0.jar`. Собрать app-image:
+Результат — `target/ChromaForge-Launcher-0.1.0.jar`. Собрать app-image:
 
 ```bash
-jpackage --input target --name launcher \
-  --main-jar launcher-0.1.0.jar --main-class chromaforge.launcher.Launcher \
+jpackage --input target --name ChromaForge-Launcher \
+  --main-jar ChromaForge-Launcher-0.1.0.jar --main-class chromaforge.launcher.Launcher \
   --type app-image --dest build
 ```
+
+На Windows внутри `build/ChromaForge-Launcher` уже лежит готовый `ChromaForge-Launcher.exe`.
 
 ---
 
