@@ -140,7 +140,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: launcher-*
+          pattern: ChromaForge-Launcher-*
           path: artifacts
           merge-multiple: true
 
