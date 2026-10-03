@@ -25,7 +25,9 @@ public class InstallService {
         try {
             staging = FileUtils.createTempDirectory(paths.getCoresDir(), ".chromaforge-v" + version + "-");
             Installers.of(Platform.detectOS()).install(asset, staging, listener, settings);
-            CheckService.createChecksumsFile(staging, paths.getChecksumsFile(version));
+            if (!settings.skipChecksums()) {
+                CheckService.createChecksumsFile(staging, paths.getChecksumsFile(version));
+            }
             if (FileUtils.isDir(finalDir)) {
                 FileUtils.deleteRecursive(finalDir);
             }

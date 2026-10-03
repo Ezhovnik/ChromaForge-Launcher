@@ -86,7 +86,7 @@ public class InstallCommand extends Command {
                 parser.has("--retry")
             );
             if (settings.skipChecksums()) {
-                ConsoleUtils.warn("The flag '--skip-checksums' was specified. The downloaded archive will not be verified for integrity using checksums");
+                ConsoleUtils.warn("Checksum verification for integrity will not be calculated for downloaded files");
             }
             InstallService.install(asset, CoreVersion.parse(release.tagName.substring(1)), paths,
                 new InstallListener() {

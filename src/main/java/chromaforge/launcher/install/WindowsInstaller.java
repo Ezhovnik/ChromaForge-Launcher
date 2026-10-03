@@ -29,7 +29,7 @@ public final class WindowsInstaller implements Installer {
                 asset.browserDownloadUrl,
                 temp,
                 listener,
-                settings.skipChecksums() ? null : asset.sha256,
+                asset.sha256,
                 settings.canRetry() ? 5 : 1
             );
             listener.onStatus("Extracting");

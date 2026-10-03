@@ -29,7 +29,7 @@ public final class LinuxInstaller implements Installer {
                 asset.browserDownloadUrl,
                 temp,
                 listener,
-                settings.skipChecksums() ? null : asset.sha256,
+                asset.sha256,
                 settings.canRetry() ? 5 : 1
             );
             Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
