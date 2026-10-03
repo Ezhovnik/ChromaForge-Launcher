@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Launcher release version, e.g. 1.0.0 (optional leading "v" is stripped)'
+        description: 'Launcher release version'
         required: true
         default: '0.0.0'
 
@@ -12,33 +12,11 @@ permissions:
   contents: write
 
 jobs:
-  version:
-    name: Resolve version
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.resolve.outputs.version }}
-    steps:
-      - name: Resolve version
-        id: resolve
-        env:
-          RAW_VERSION: ${{ inputs.version }}
-        run: |
-          set -euo pipefail
-          v="$(printf '%s' "$RAW_VERSION" | tr -d '[:space:]')"
-          v="${v#v}"
-          v="${v#V}"
-          if ! printf '%s' "$v" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$'; then
-            echo "::error::Invalid version input '$RAW_VERSION'. Expected MAJOR.MINOR.PATCH, e.g. 1.0.0"
-            exit 1
-          fi
-          echo "version=$v" >> "$GITHUB_OUTPUT"
-
   build:
     name: Build (${{ matrix.os }})
-    needs: version
     runs-on: ${{ matrix.os }}
     env:
-      VERSION: ${{ needs.version.outputs.version }}
+      VERSION: ${{ inputs.version }}
     strategy:
       fail-fast: false
       matrix:
@@ -54,7 +32,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build jar
-        run: mvn -B package "-Drevision=$VERSION"
+        run: mvn -B package -Drevision=${{ inputs.version }}
 
       - name: Verify jar version
         shell: bash
@@ -153,10 +131,10 @@ jobs:
 
   release:
     name: Publish release
-    needs: [ version, build, test ]
+    needs: [ build, test ]
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ needs.version.outputs.version }}
+      VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v4
 
