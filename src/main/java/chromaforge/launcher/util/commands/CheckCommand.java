@@ -30,7 +30,6 @@ public class CheckCommand extends Command {
         try {
             CheckService.check(version, paths, ConsoleUtils.consoleProgress());
         } catch (CheckException e) {
-            ConsoleUtils.clearLine();
             ConsoleUtils.error("The check failed: " + e.getMessage());
             ConsoleUtils.tip("  Try reinstalling with 'install " + tagName + "'");
             return ExitCode.FAILURE;

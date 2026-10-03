@@ -27,9 +27,13 @@ public class FetchCommand extends Command {
         try {
             releases = ReleaseService.fetchAll();
         } catch (GitHubClientException e) {
+            ConsoleUtils.stopSpinner(spinner);
+            spinner = null;
             ConsoleUtils.error("Failed to connect to GitHub: " + e.getMessage());
             return ExitCode.FAILURE;
         } catch (Exception e) {
+            ConsoleUtils.stopSpinner(spinner);
+            spinner = null;
             ConsoleUtils.error("Failed to fetch releases: " + e.getMessage());
             return ExitCode.FAILURE;
         } finally {

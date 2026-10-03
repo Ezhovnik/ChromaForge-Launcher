@@ -50,6 +50,7 @@ public class ConsoleUtils {
     }
 
     public static void error(String message) {
+        clearLine();
         out.println(colored(ConsoleColor.RED, ConsoleSymbols.CROSS + " " + message));
     }
 
@@ -92,9 +93,16 @@ public class ConsoleUtils {
     }
 
     public static void stopSpinner(Thread spinner) {
-        if (spinner != null) {
-            spinner.interrupt();
+        if (spinner == null) {
+            return;
         }
+        spinner.interrupt();
+        try {
+            spinner.join(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        clearLine();
     }
 
     public static boolean confirmDeletion(String name) {
