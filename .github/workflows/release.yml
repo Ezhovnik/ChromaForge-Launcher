@@ -32,7 +32,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build jar
-        run: mvn -B package -Drevision=${{ inputs.version }}
+        run: mvn -B package
 
       - name: Package into app-image
         shell: bash
