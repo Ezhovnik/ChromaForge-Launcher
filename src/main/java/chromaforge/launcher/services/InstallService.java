@@ -9,16 +9,22 @@ import chromaforge.launcher.io.FileUtils;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.util.CoreVersion;
 import chromaforge.launcher.util.Platform;
+import chromaforge.launcher.install.InstallSettings;
 
 public class InstallService {
-
-    static public void install(AssetInfo asset, CoreVersion version, LauncherPaths paths, InstallListener listener) {
+    static public void install(
+        AssetInfo asset,
+        CoreVersion version,
+        LauncherPaths paths,
+        InstallListener listener,
+        InstallSettings settings
+    ) {
         Path finalDir = paths.getCoreDir(version);
         Path staging = null;
 
         try {
             staging = FileUtils.createTempDirectory(paths.getCoresDir(), ".chromaforge-v" + version + "-");
-            Installers.of(Platform.detectOS()).install(asset, staging, listener);
+            Installers.of(Platform.detectOS()).install(asset, staging, listener, settings);
             CheckService.createChecksumsFile(staging, paths.getChecksumsFile(version));
             if (FileUtils.isDir(finalDir)) {
                 FileUtils.deleteRecursive(finalDir);

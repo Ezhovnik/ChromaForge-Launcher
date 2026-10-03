@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import chromaforge.launcher.github.AssetInfo;
+import chromaforge.launcher.io.FileUtils;
 
 public final class LinuxInstaller implements Installer {
     private final Downloader downloader;
@@ -18,26 +19,31 @@ public final class LinuxInstaller implements Installer {
     }
 
     @Override
-    public void install(AssetInfo asset, Path installDir, InstallListener listener) {
+    public void install(AssetInfo asset, Path installDir, InstallListener listener, InstallSettings settings) {
         try {
-            Files.createDirectories(installDir);
+            FileUtils.mkdirs(installDir);
             Path target = installDir.resolve("ChromaForge.AppImage");
-            Path temp = Files.createTempFile("chromaforge", ".AppImage");
-
-            try {
-                listener.onStatus("Downloading");
-                downloader.download(asset.browserDownloadUrl, temp, listener.progress());
-                Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                setExecutable(target);
-            } finally {
-                Files.deleteIfExists(temp);
-            }
+            Path temp = Files.createTempFile(installDir, "chromaforge", ".zip");
+            listener.onStatus("Downloading");
+            downloader.download(
+                asset.browserDownloadUrl,
+                temp,
+                listener,
+                settings.skipChecksums() ? null : asset.sha256,
+                settings.canRetry() ? 5 : 1
+            );
+            Files.move(temp, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            setExecutable(target);
+            Files.deleteIfExists(temp);
 
             if (!Files.exists(target)) {
                 throw new RuntimeException("Target file missing after installation: " + target);
             }
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Failed to install " + asset.name, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while installing " + asset.name, e);
+        } catch (IOException | RuntimeException e) {
+            throw new RuntimeException("Failed to install " + asset.name + " : " + e.getMessage(), e);
         }
     }
 

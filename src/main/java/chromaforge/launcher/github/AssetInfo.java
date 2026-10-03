@@ -9,19 +9,22 @@ public class AssetInfo {
     public final String name;
     public final long size;
     public final String browserDownloadUrl;
+    public final String sha256;
 
-    public AssetInfo(String name, long size, String browserDownloadUrl) {
+    public AssetInfo(String name, long size, String browserDownloadUrl, String sha256) {
         this.name = name;
         this.size = size;
         this.browserDownloadUrl = browserDownloadUrl;
+        this.sha256 = sha256;
     }
 
     public static AssetInfo fromJson(dvObject object) {
         String name = ((dvString) object.entries().get("name")).value();
         long size = ((dvLong) object.entries().get("size")).value();
         String browserDownloadUrl = ((dvString) object.entries().get("browser_download_url")).value();
+        String sha256 = ((dvString) object.entries().get("digest")).value().substring(7);
 
-        return new AssetInfo(name, size, browserDownloadUrl);
+        return new AssetInfo(name, size, browserDownloadUrl, sha256);
     }
 
     public static AssetInfo fromRelease(ReleaseInfo release) {

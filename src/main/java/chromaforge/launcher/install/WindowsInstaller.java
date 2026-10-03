@@ -6,6 +6,7 @@ import java.nio.file.Path;
 
 import chromaforge.launcher.coders.zip.Unzipper;
 import chromaforge.launcher.github.AssetInfo;
+import chromaforge.launcher.io.FileUtils;
 
 public final class WindowsInstaller implements Installer {
     private final Downloader downloader;
@@ -17,27 +18,33 @@ public final class WindowsInstaller implements Installer {
     }
 
     @Override
-    public void install(AssetInfo asset, Path installDir, InstallListener listener) {
+    public void install(AssetInfo asset, Path installDir, InstallListener listener, InstallSettings settings) {
         Path temp = null;
         try {
+            FileUtils.mkdirs(installDir);
             temp = Files.createTempFile("chromaforge", ".zip");
-            Files.createDirectories(installDir);
 
             listener.onStatus("Downloading");
-            downloader.download(asset.browserDownloadUrl, temp, listener.progress());
+            downloader.download(
+                asset.browserDownloadUrl,
+                temp,
+                listener,
+                settings.skipChecksums() ? null : asset.sha256,
+                settings.canRetry() ? 5 : 1
+            );
             listener.onStatus("Extracting");
             unzipper.unzip(temp, installDir);
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while installing " + asset.name, e);
+        } catch (IOException | RuntimeException e) {
             throw new RuntimeException("Failed to install " + asset.name + " : " + e.getMessage(), e);
         } finally {
-            if (temp != null) {
-                try {
-                    Files.deleteIfExists(temp);
-                } catch (IOException ignored) {
-                    // Удаление temp-файла — не повод падать после успешной установки
-                }
+            try {
+                Files.deleteIfExists(temp);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete temp-file " + temp + " : " + e.getMessage(), e);
             }
         }
-
     }
 }

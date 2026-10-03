@@ -8,6 +8,7 @@ import chromaforge.launcher.github.GitHubClient.GitHubClientException;
 import chromaforge.launcher.github.ReleaseInfo;
 import chromaforge.launcher.interfaces.Progress;
 import chromaforge.launcher.install.InstallListener;
+import chromaforge.launcher.install.InstallSettings;
 import chromaforge.launcher.io.LauncherPaths;
 import chromaforge.launcher.services.CoreService;
 import chromaforge.launcher.services.InstallService;
@@ -19,8 +20,14 @@ import chromaforge.launcher.util.ExitCode;
 public class InstallCommand extends Command {
     public InstallCommand() {
         this.keyword = "install";
-        this.args = "<version>";
+        this.args = "<version> [--skip-checksums] [--retry]";
         this.help = "installs the specified engine version";
+    }
+
+    @Override
+    protected void registerArgs() {
+        parser.flag("--skip-checksums", "-k", "don't verify the SHA-256 of the downloaded archive");
+        parser.flag("--retry", "-r", "retry an interrupted download if possible");
     }
 
     @Override
@@ -66,9 +73,17 @@ public class InstallCommand extends Command {
         ConsoleUtils.tip("Release '" + tagName + "' found");
         ConsoleUtils.tip(String.format("  %-15s %s", "File:", asset.name));
         ConsoleUtils.tip(String.format("  %-15s %s", "Download size:", StringUtils.humanSize(asset.size)));
+        ConsoleUtils.tip(String.format("  %-15s %s", "SHA-256:", asset.sha256));
         ConsoleUtils.tip(String.format("  %-15s %s", "Install:", paths.getCoreDir(version).toAbsolutePath()));
 
         try {
+            InstallSettings settings = new InstallSettings(
+                parser.has("--skip-checksums"),
+                parser.has("--retry")
+            );
+            if (settings.skipChecksums()) {
+                ConsoleUtils.warn("The flag '--skip-checksums' was specified. The downloaded archive will not be verified for integrity using checksums");
+            }
             InstallService.install(asset, CoreVersion.parse(release.tagName.substring(1)), paths,
                 new InstallListener() {
                     @Override
@@ -80,7 +95,9 @@ public class InstallCommand extends Command {
                     public Progress progress() {
                         return ConsoleUtils.consoleProgress();
                     }
-                });
+                },
+                settings
+            );
             if (CoreService.isInstalled(version, paths)) {
                 ConsoleUtils.success("Successfully installed '" + tagName + "'");
             } else {

@@ -7,6 +7,8 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import chromaforge.launcher.io.FileUtils;
+
 public class Unzipper {
     public int unzip(Path zipPath, Path targetDir) throws IOException {
         int count = 0;
@@ -21,10 +23,10 @@ public class Unzipper {
                 }
 
                 if (entry.isDirectory()) {
-                    Files.createDirectories(target);
+                    FileUtils.mkdirs(target);
                     continue;
                 }
-                Files.createDirectories(target.getParent());
+                FileUtils.mkdirs(target.getParent());
                 try (InputStream in = zip.getInputStream(entry)) {
                     Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
                 }
